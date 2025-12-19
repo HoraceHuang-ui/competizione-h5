@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import '@mdui/icons/check--rounded.js'
 import { snackbar } from 'mdui'
 import { translate } from '@/i18n'
-import { getCarByKey } from '../../../utils/utils'
+import { brotliCompress, brotliDecompress, getCarByKey } from '@/utils/utils'
 import TrackSelector from '@/components/TrackSelector.vue'
 
 const props = defineProps({
@@ -29,16 +29,16 @@ const emits = defineEmits(['closeDialog', 'importSetup'])
 const name = ref(props.alias.replace('.json', ''))
 
 const copyCode = async () => {
-  const code = await window.brotli
-    .compress(`${props.car},${props.extractedSetup}`)
-    .catch(e => {
-      console.error(e)
-      snackbar({
-        message: translate('general.unknownFail'),
-        autoCloseDelay: 6000,
-      })
-      return ''
+  const code = await brotliCompress(
+    `${props.car},${props.extractedSetup}`,
+  ).catch(e => {
+    console.error(e)
+    snackbar({
+      message: translate('general.unknownFail'),
+      autoCloseDelay: 6000,
     })
+    return ''
+  })
   if (name.value !== '' && code) {
     navigator.clipboard
       .writeText(`${name.value}\n#${translate('setup.codeCopyMsg')}\n#${code}`)
@@ -61,15 +61,13 @@ const parseCode = async () => {
   if (parts.length > 1) {
     name.value = parts[0].trim()
   }
-  const decompressed = await window.brotli.decompress(
-    parts[parts.length - 1].trim(),
-  )
+  const decompressed = await brotliDecompress(parts[parts.length - 1].trim())
   setupParts.value = decompressed.split(',')
   car.value = setupParts.value[0].trim()
 }
 watch(code, parseCode)
 
-const viewSetup = async (save: boolean) => {
+const viewSetup = () => {
   const s = setupParts.value.map(x => parseInt(x))
   const res = {
     carName: car.value,
@@ -147,14 +145,6 @@ const viewSetup = async (save: boolean) => {
     trackBopType: s[95],
   }
 
-  if (save) {
-    await window.fs.setupFile(
-      car.value,
-      track.value?.value,
-      name.value + '.json',
-      JSON.stringify(res),
-    )
-  }
   emits('importSetup', res, name.value)
   closeDialog()
 }
@@ -177,7 +167,7 @@ const closeDialog = () => {
         @input="name = $event.target.value"
         :placeholder="$t('setup.setupNamePlaceholder')"
         class="mt-2 cursor-text"
-        @keyup.native.enter="copyCode"
+        @keyup.enter="copyCode"
         :label="$t('setup.setupNameLabel')"
       >
       </mdui-text-field>
@@ -206,7 +196,7 @@ const closeDialog = () => {
         @input="name = $event.target.value"
         :placeholder="$t('setup.setupNamePlaceholder')"
         class="mt-4 cursor-text"
-        @keyup.native.enter="copyCode"
+        @keyup.enter="copyCode"
         :label="$t('setup.setupNameLabel')"
       >
       </mdui-text-field>
@@ -218,19 +208,9 @@ const closeDialog = () => {
         dropdown-placement="right"
         chip-class="mt-2 w-max"
       />
-      <mdui-button
-        class="mt-10 font-bold"
-        :disabled="!code || !name || !track"
-        @click="() => viewSetup(true)"
-        >{{ $t('setup.saveAndView') }}</mdui-button
-      >
-      <mdui-button
-        variant="elevated"
-        class="mt-2"
-        :disabled="!code || !name"
-        @click="() => viewSetup(false)"
-        >{{ $t('setup.viewOnly') }}</mdui-button
-      >
+      <mdui-button class="mt-2" :disabled="!code || !name" @click="viewSetup">{{
+        $t('setup.viewOnly')
+      }}</mdui-button>
       <mdui-button variant="text" class="mt-2" @click="closeDialog">{{
         $t('general.cancel')
       }}</mdui-button>

@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import OnlineRules from '@/views/RulesPage/components/OnlineRules.vue'
-import {
-  findRules,
-  keywords,
-  OnlineRuleItem,
-  onlineRules,
-  RacePart,
-  ReportForm,
-} from '@/utils/onlineRules'
+import { findRules, keywords, onlineRules, RacePart } from '@/utils/onlineRules'
+import type { OnlineRuleItem, ReportForm } from '@/utils/onlineRules'
 import { useStore } from '@/store'
 import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import '@mdui/icons/info.js'

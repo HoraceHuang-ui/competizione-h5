@@ -4,16 +4,16 @@ import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import { darkModeSettings, trackIndex } from '@/utils/enums'
 import {
   getCarById,
-  getCarDisplay,
   getCarDisplayById,
   getTrack,
   getTrackDisplay,
 } from '@/utils/utils'
 import { useStore } from '@/store'
 import CarSelector from '@/components/CarSelector.vue'
-import carData from '@/utils/carData'
+import carData from '@/utils/carData.ts'
 import '@mdui/icons/save--rounded.js'
-import PresetDialog from '@/views/BopPage/components/PresetDialog.vue'
+// import PresetDialog from '@/views/BopPage/components/PresetDialog.vue'
+import TrackSelector from '@/components/TrackSelector.vue'
 
 const store = useStore()
 
@@ -27,7 +27,7 @@ const curCar = ref<any>(null)
 const curSeries = ref('GT3')
 const loading = ref(true)
 const error = ref(false)
-const saveDialogShow = ref(false)
+// const saveDialogShow = ref(false)
 
 const defaultGT3 = {
   value: 'amr_v8_vantage_gt3',
@@ -124,19 +124,19 @@ onMounted(() => {
           </mdui-radio-group>
         </div>
         <div class="flex flex-row items-center">
-          <mdui-tooltip
-            :content="$t('bop.saveToGUI')"
-            placement="bottom"
-            :disabled="loading"
-          >
-            <mdui-button-icon
-              class="mr-2"
-              :disabled="loading"
-              @click="saveDialogShow = true"
-            >
-              <mdui-icon-save--rounded></mdui-icon-save--rounded>
-            </mdui-button-icon>
-          </mdui-tooltip>
+          <!--          <mdui-tooltip-->
+          <!--            :content="$t('bop.saveToGUI')"-->
+          <!--            placement="bottom"-->
+          <!--            :disabled="loading"-->
+          <!--          >-->
+          <!--            <mdui-button-icon-->
+          <!--              class="mr-2"-->
+          <!--              :disabled="loading"-->
+          <!--              @click="saveDialogShow = true"-->
+          <!--            >-->
+          <!--              <mdui-icon-save&#45;&#45;rounded></mdui-icon-save&#45;&#45;rounded>-->
+          <!--            </mdui-button-icon>-->
+          <!--          </mdui-tooltip>-->
 
           <mdui-segmented-button-group
             :value="curSeries"
@@ -224,7 +224,7 @@ onMounted(() => {
             >
               <div class="w-[50%] flex flex-row items-center">
                 <img
-                  :src="`../../src/assets/carLogos/${getCarById(bop.car_model)?.[1]?.manufacturer}.png`"
+                  :src="`/carLogos/${getCarById(bop.car_model)?.[1]?.manufacturer}.png`"
                   class="w-6 h-6 mr-3"
                 />
                 <div>
@@ -328,7 +328,7 @@ onMounted(() => {
       </Transition>
     </mdui-card>
 
-    <PresetDialog v-model="saveDialogShow" :bop="bopData" />
+    <!--    <PresetDialog v-model="saveDialogShow" :bop="bopData" />-->
   </div>
 </template>
 

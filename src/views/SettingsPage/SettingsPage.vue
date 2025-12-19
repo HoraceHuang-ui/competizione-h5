@@ -14,8 +14,6 @@ import { getColorFromImage, setColorScheme, setTheme, snackbar } from 'mdui'
 import { themeMap, darkModeSettings, trackCarDispSettings } from '@/utils/enums'
 import { availableLangCodes, switchLang, translate, langMap } from '@/i18n'
 import { ChromePicker } from 'vue-color'
-import UpdateDialog from '@/components/UpdateDialog.vue'
-import { checkUpdate } from '@/utils/utils'
 import FavDialog from '@/views/SettingsPage/components/FavDialog.vue'
 
 const showFavDialog = ref(false)
@@ -76,7 +74,7 @@ const darkModeChange = (event: Event) => {
       : store.settings.general.darkMode !== darkModeSettings.LIGHT
 }
 const openLink = (url: string) => {
-  window.electron.openExtLink(url)
+  window.open(url, '_blank')
 }
 
 const onLangSelect = () => {
@@ -97,37 +95,6 @@ const onLangSelect = () => {
   }
 }
 
-const changeTray = (checked: boolean) => {
-  store.settings.general.minToTray = checked
-  // window.electron.storeSet('tray', checked)
-}
-
-const appVer = import.meta.env.VITE_APP_VERSION
-const updChecking = ref(false)
-const updDialogShow = ref(false)
-const updInfo = ref<any>({})
-const latest = ref(false)
-const invokeUpdateCheck = () => {
-  updChecking.value = true
-  checkUpdate()
-    .then((info: any) => {
-      if (info) {
-        updInfo.value = info
-        updDialogShow.value = true
-        latest.value = false
-      } else {
-        snackbar({
-          message: translate('settings.upToDate'),
-          autoCloseDelay: 3000,
-        })
-        latest.value = true
-      }
-    })
-    .finally(() => {
-      updChecking.value = false
-    })
-}
-
 let throttleTimeout: ReturnType<typeof setTimeout> | null = null
 let lastThemeColor: string | null = null
 
@@ -145,40 +112,6 @@ watch(
     }, 100)
   },
 )
-
-const bgButtonLoading = ref(false)
-const setBgImage = () => {
-  window.dialog
-    .showAndCopy({
-      title: translate('settings.bgSelectTitle'),
-      properties: ['openFile'],
-      filters: [
-        {
-          name: translate('settings.bgSelectFileType'),
-          extensions: ['jpg', 'png', 'webp'],
-        },
-      ],
-    })
-    .then(async resp => {
-      if (resp) {
-        bgButtonLoading.value = true
-        store.settings.general.bgImgPath = resp
-        const img = new Image()
-        img.src = await window.img.getBgBase64()
-        getColorFromImage(img).then(color => {
-          if (color) {
-            store.settings.general.themeColor = color
-            setColorScheme(color)
-          }
-          bgButtonLoading.value = false
-          store.settings.general.bgImg = img.src
-        })
-      }
-    })
-    .catch(error => {
-      console.error('Error in showing dialog:', error)
-    })
-}
 </script>
 
 <template>
@@ -187,7 +120,7 @@ const setBgImage = () => {
       variant="outlined"
       class="size-full transition-all border border-[rgb(var(--mdui-color-inverse-primary-dark))] mx-4 mb-4 flex"
       :style="{
-        background: `rgba(var(--mdui-color-surface-container-lowest), ${(0.65 * (store.settings.general.bgOpacity || 0.85)) / 0.85})`,
+        background: `rgb(var(--mdui-color-surface-container-lowest))`,
       }"
     >
       <ScrollWrapper class="pl-2 pr-1">
@@ -242,70 +175,6 @@ const setBgImage = () => {
               <div class="item-in">
                 <div>{{ $t('settings.colorScheme') }}</div>
                 <div class="flex flex-row items-center">
-                  <div v-if="bgButtonLoading">
-                    {{ $t('settings.extracting') }}
-                  </div>
-                  <mdui-tooltip
-                    :content="$t('settings.deleteBg')"
-                    placement="bottom"
-                    v-if="!bgButtonLoading && store.settings.general.bgImgPath"
-                  >
-                    <mdui-button-icon
-                      class="mr-2"
-                      @click="
-                        () => {
-                          store.settings.general.bgImgPath = ''
-                          store.settings.general.bgImg = ''
-                        }
-                      "
-                    >
-                      <mdui-icon-undo--rounded></mdui-icon-undo--rounded>
-                    </mdui-button-icon>
-                  </mdui-tooltip>
-                  <mdui-tooltip
-                    :content="$t('settings.setBg')"
-                    placement="bottom"
-                  >
-                    <mdui-button-icon class="mr-1" @click="setBgImage">
-                      <mdui-icon-image--rounded></mdui-icon-image--rounded>
-                    </mdui-button-icon>
-                  </mdui-tooltip>
-                  <mdui-tooltip
-                    placement="bottom"
-                    v-if="!bgButtonLoading && store.settings.general.bgImgPath"
-                    variant="rich"
-                    :headline="$t('settings.bgOpacity')"
-                  >
-                    <div slot="content" class="w-[300px]">
-                      <mdui-slider
-                        class="px-4"
-                        :value="store.settings.general.bgOpacity || 0.85"
-                        :min="0.5"
-                        :step="0.05"
-                        :max="1"
-                        @input="
-                          store.settings.general.bgOpacity = $event.target.value
-                        "
-                        nolabel
-                      ></mdui-slider>
-                    </div>
-                    <div
-                      class="mr-2 px-4 py-2 rounded-full"
-                      style="
-                        background: rgba(
-                          var(--mdui-color-inverse-on-surface),
-                          0.6
-                        );
-                      "
-                    >
-                      {{
-                        (
-                          (store.settings.general.bgOpacity || 0.85) * 100
-                        ).toFixed(0)
-                      }}%
-                    </div>
-                  </mdui-tooltip>
-
                   <mdui-tooltip placement="bottom-end" class="picker">
                     <ChromePicker
                       slot="content"
@@ -326,19 +195,6 @@ const setBgImage = () => {
                     </div>
                   </mdui-tooltip>
                 </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="item-in">
-                <div>{{ $t('settings.minToTray') }}</div>
-                <mdui-switch
-                  :checked="store.settings.general.minToTray"
-                  @change="
-                    e => {
-                      changeTray(e.target.checked)
-                    }
-                  "
-                ></mdui-switch>
               </div>
             </div>
             <mdui-button
@@ -418,17 +274,6 @@ const setBgImage = () => {
                 ></mdui-switch>
               </div>
             </div>
-            <div class="item">
-              <div class="item-in">
-                <div>{{ $t('settings.alwaysViewOnly') }}</div>
-                <mdui-switch
-                  :checked="store.settings.setup.alwaysViewOnly"
-                  @change="
-                    store.settings.setup.alwaysViewOnly = $event.target.checked
-                  "
-                ></mdui-switch>
-              </div>
-            </div>
           </div>
           <div class="category">
             <div class="title header">{{ $t('settings.about') }}</div>
@@ -436,14 +281,6 @@ const setBgImage = () => {
               <div class="item-in">
                 <div class="flex flex-row items-center">
                   <div>{{ $t('settings.version') }}</div>
-                  <mdui-chip
-                    class="ml-2 rounded-full"
-                    style="
-                      font-family: Consolas, 'Harmony OS Sans SC', sans-serif;
-                    "
-                  >
-                    {{ appVer }}
-                  </mdui-chip>
                 </div>
                 <div class="flex flex-row justify-end items-center">
                   <mdui-button-icon
@@ -457,14 +294,6 @@ const setBgImage = () => {
                   >
                     <img src="../../assets/github-mark.png" class="p-1" />
                   </mdui-button-icon>
-                  <mdui-button
-                    variant="tonal"
-                    @click="invokeUpdateCheck"
-                    :disabled="updChecking || latest"
-                    :loading="updChecking"
-                  >
-                    {{ $t('settings.checkUpdate') }}
-                  </mdui-button>
                 </div>
               </div>
             </div>
@@ -555,7 +384,7 @@ const setBgImage = () => {
                     >{{ $t('settings.hipoleTooltip') }}
                   </div>
                   <img
-                    :src="`../../src/assets/hipole/${$t('langCode')}_${isDark ? 'dark' : 'light'}.png`"
+                    :src="`/hipole/${$t('langCode')}_${isDark ? 'dark' : 'light'}.png`"
                     class="inline mx-4 opacity-55 hover:opacity-100 transition-all"
                     width="130"
                   />

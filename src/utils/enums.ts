@@ -1,3 +1,5 @@
+import type { Theme } from 'mdui/internal/theme'
+
 export const tyreCompound = ['tyreCompoundDry', 'tyreCompoundWet']
 export const tyreCompoundEn = ['DRY', 'WET']
 export const values4 = ['LF', 'RF', 'LR', 'RR']
@@ -6,7 +8,7 @@ export const values2En = ['F', 'R']
 export const values2alt = ['L', 'Rh']
 export const values2altEn = ['L', 'R']
 
-export const themeMap = {
+export const themeMap: Record<number, Theme> = {
   1: 'light',
   2: 'auto',
   3: 'dark',
@@ -22,9 +24,9 @@ export const seriesColorMap = {
 }
 
 export const darkModeSettings = {
-  LIGHT: '1',
-  AUTO: '2',
-  DARK: '3',
+  LIGHT: 1,
+  AUTO: 2,
+  DARK: 3,
 }
 
 export const trackCarDispSettings = {

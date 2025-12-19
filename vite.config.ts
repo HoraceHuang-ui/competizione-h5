@@ -1,21 +1,33 @@
-import { fileURLToPath, URL } from 'node:url'
+import { fileURLToPath, URL } from "node:url";
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import vueDevTools from "vite-plugin-vue-devtools";
 
-import { cloudflare } from "@cloudflare/vite-plugin"
+import { cloudflare } from "@cloudflare/vite-plugin";
+
+import Components from "unplugin-vue-components/vite";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [
-		vue(),
-		vueDevTools(),
-		cloudflare()
-	],
-	resolve: {
-		alias: {
-			'@': fileURLToPath(new URL('./src', import.meta.url))
-		},
-	},
-})
+  plugins: [
+    vueDevTools(),
+    cloudflare(),
+    Components(),
+    tailwindcss(),
+    vue({
+      template: {
+        compilerOptions: {
+          // 所有以 mdui- 开头的标签名都是 mdui 组件
+          isCustomElement: (tag) => tag.startsWith("mdui-"),
+        },
+      },
+    }),
+  ],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
+});

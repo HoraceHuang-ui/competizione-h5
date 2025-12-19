@@ -3,9 +3,8 @@ import { translate } from '@/i18n'
 import { useStore } from '@/store'
 import { trackCarDispSettings, trackIndex } from '@/utils/enums'
 import carData from '@/utils/carData'
-import { snackbar } from 'mdui'
-import trackData from '@/utils/trackData'
 import { nextTick } from 'vue'
+import * as brotli from 'brotli-compress'
 
 export const obj2Param = (obj: Record<string, any>) => {
   return Object.entries(obj)
@@ -22,7 +21,7 @@ export const obj2Param = (obj: Record<string, any>) => {
 
 export const getTrack = (trackId: string, by = trackIndex.ID) => {
   return tracks.find(
-    (t: []) =>
+    (t: string[]) =>
       t[by] === (by === trackIndex.ID ? trackId.toLowerCase() : trackId),
   )
 }
@@ -35,7 +34,9 @@ export const getTrackDisplay = (trackId: string, by = trackIndex.ID) => {
     return translate(`tracks.${res?.[trackIndex.ID]}`)
   } else {
     return res?.[
-      [trackIndex.FULL, trackIndex.SHORT][store.settings.setup.trackDisplay - 1]
+      [trackIndex.FULL, trackIndex.SHORT][
+        store.settings.setup.trackDisplay - 1
+      ] ?? trackIndex.FULL
     ]
   }
 }
@@ -48,12 +49,14 @@ export const getCarDisplay = (car: [string, any]) => {
     return translate(`cars.${car?.[0]}`)
   } else {
     if (car?.[1]) {
-      return car[1][['name', 'shortName'][store.settings.setup.carDisplay - 1]]
+      return car[1][
+        ['name', 'shortName'][store.settings.setup.carDisplay - 1] ?? 'name'
+      ]
     } else {
       for (const series of Object.values(carData) as any[]) {
         if (series[car[0]]) {
           return series[car[0]][
-            ['name', 'shortName'][store.settings.setup.carDisplay - 1]
+            ['name', 'shortName'][store.settings.setup.carDisplay - 1] ?? 'name'
           ]
         }
       }
@@ -88,65 +91,6 @@ export const getCarDisplayById = (carId: number) => {
   return getCarDisplay(getCarById(carId) as [string, any])
 }
 
-export const verCompare = (a: string, b: string) => {
-  const arr1 = a.split('.')
-  const arr2 = b.split('.')
-
-  if (arr1.length != arr2.length) {
-    return 114
-  }
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (parseInt(arr1[i]) > parseInt(arr2[i])) {
-      return 1
-    } else if (parseInt(arr1[i]) < parseInt(arr2[i])) {
-      return -1
-    }
-  }
-  return 0
-}
-
-export const checkUpdate = async (
-  curVersion: string = import.meta.env.VITE_APP_VERSION,
-) => {
-  const needsUpdate = (latestStr: string) => {
-    return verCompare(latestStr.split(' ')[0], curVersion.split(' ')[0]) > 0
-  }
-
-  try {
-    const res = await window.axios
-      // .get('http://0.0.0.0:5005/competizione')
-      .get('http://120.55.52.240:5005/competizione')
-    if (res.success) {
-      const resp = res.updInfo
-      if (needsUpdate(resp.version)) {
-        return resp
-      }
-    }
-  } catch (error) {
-    snackbar({
-      message: translate('general.checkUpdFail'),
-      autoCloseDelay: 3000,
-    })
-    console.error(error)
-  }
-}
-
-export const parsePreset = (presetStr: string) => {
-  const result: Record<string, any> = {}
-  const regex = /#([A-Z]+)\s*({[\s\S]*?})/g
-  let match
-  while ((match = regex.exec(presetStr)) !== null) {
-    const key = match[1]
-    try {
-      result[key] = JSON.parse(match[2])
-    } catch (e) {
-      // Invalid JSON, skip
-    }
-  }
-  return result
-}
-
 export const json2Preset = (json: Record<string, any>) => {
   return Object.entries(json)
     .map(
@@ -159,7 +103,7 @@ export const json2Preset = (json: Record<string, any>) => {
 export const formatBopData = (bop: any[]) => {
   const entries = []
   for (const trackBop of bop) {
-    const track = trackData.find(
+    const track = tracks.find(
       it => it[trackIndex.LFM] === trackBop.track_name,
     )?.[trackIndex.ID]
     for (const car of trackBop.bop.GT3.concat(trackBop.bop.GT4)) {
@@ -177,8 +121,8 @@ export const formatBopData = (bop: any[]) => {
 
 export const isHipole = (name: string) => {
   if (name.startsWith('HiPole.com | ') && name.length >= 16) {
-    const event = name.split(' | ')[1].substring(0, 3)
-    return ['RCC', 'TTC', 'MCC', 'RWC', 'Thr'].includes(event)
+    const event = name.split(' | ')?.[1]?.substring?.(0, 3)
+    return ['RCC', 'TTC', 'MCC', 'RWC', 'Thr'].includes(event ?? '')
       ? event
       : undefined
   }
@@ -197,7 +141,7 @@ export const connectServer = (ip: string, tcpPort: number, name: string) => {
   }
 }
 
-export const sortCars = (group = 'GT3') => {
+export const sortCars = (group: 'GT3' | 'GT4' | 'TCX' | 'GTC' = 'GT3') => {
   const store = useStore()
   const favCars = store.general.favCars[group]
   const list = Object.entries(carData[group])
@@ -222,11 +166,30 @@ export const sortTracks = () => {
   const store = useStore()
   const favTracks = store.general.favTracks
   return tracks.slice().sort((a, b) => {
-    const aFav = favTracks.includes(a[trackIndex.ID]) ? 0 : 1
-    const bFav = favTracks.includes(b[trackIndex.ID]) ? 0 : 1
+    const aFav = favTracks.includes(a[trackIndex.ID] ?? '') ? 0 : 1
+    const bFav = favTracks.includes(b[trackIndex.ID] ?? '') ? 0 : 1
     if (aFav !== bFav) {
       return aFav - bFav
     }
-    return getTrackDisplay(a[trackIndex.ID]) - getTrackDisplay(b[trackIndex.ID])
+    return (getTrackDisplay(a[trackIndex.ID] ?? '') ?? '') >
+      (getTrackDisplay(b[trackIndex.ID] ?? '') ?? '')
+      ? 1
+      : -1
   })
+}
+
+export const launchSteam = (id: string) => {
+  window.open(`steam://rungameid/${id}`, '_blank')
+}
+
+export const brotliCompress = async (input: string) => {
+  const encoded = new TextEncoder().encode(input)
+  const compressed = await brotli.compress(encoded)
+  return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(compressed))))
+}
+
+export const brotliDecompress = async (input: string) => {
+  const buf = Uint8Array.from(atob(input), c => c.charCodeAt(0))
+  const decompressed = await brotli.decompress(buf)
+  return new TextDecoder().decode(decompressed)
 }

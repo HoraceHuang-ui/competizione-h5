@@ -3,12 +3,6 @@ import { defineStore } from 'pinia'
 export const useStore = defineStore('userStore', {
   state: () => ({
     general: {
-      targetVersion: undefined as string | undefined,
-      windowSize: {
-        width: 1200,
-        height: 700,
-        isMax: false,
-      },
       favTracks: [] as string[],
       favCars: {
         GT3: [] as string[],
@@ -21,17 +15,11 @@ export const useStore = defineStore('userStore', {
     servers: {
       listView: false,
     },
-    presets: {
-      serverExePath: '',
-    },
     settings: {
       general: {
         lang: 'zh_CN',
-        darkMode: '2',
-        minToTray: false,
+        darkMode: 2,
         themeColor: '#785abf',
-        bgImg: '',
-        bgImgPath: '',
         bgOpacity: 0.85,
       },
       status: {

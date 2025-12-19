@@ -4,16 +4,17 @@ import '@mdui/icons/check-circle--rounded.js'
 import '@mdui/icons/error--rounded.js'
 import '@mdui/icons/refresh--rounded.js'
 import { useStore } from '@/store'
+import { launchSteam } from '@/utils/utils.ts'
 
 const store = useStore()
 
 const loading = ref(false)
-const status = ref({})
+const status = ref<any>({})
 const launching = ref(false)
 
 const launchGame = () => {
   launching.value = true
-  window.steam.launch('805550')
+  launchSteam('805550')
   setTimeout(() => {
     launching.value = false
   }, 3000)
@@ -36,10 +37,6 @@ const queryData = () => {
     .finally(() => {
       loading.value = false
     })
-}
-
-const accStatusExt = () => {
-  window.electron.openExtLink('https://acc-status.jonatan.net')
 }
 
 onMounted(() => {

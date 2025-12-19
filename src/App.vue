@@ -1,107 +1,321 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import { ref } from 'vue'
+import '@mdui/icons/cell-tower--rounded.js'
+import '@mdui/icons/view-list--rounded.js'
+import '@mdui/icons/display-settings--rounded.js'
+import '@mdui/icons/settings--rounded.js'
+import '@mdui/icons/send--rounded.js'
+import '@mdui/icons/balance--rounded.js'
+import '@mdui/icons/close--rounded.js'
+import '@mdui/icons/announcement.js'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from '@/store'
+import { setTheme } from 'mdui'
+import { themeMap } from '@/utils/enums'
+import { translate } from '@/i18n'
+import { marked } from 'marked'
+import { launchSteam } from '@/utils/utils'
+import axios from 'axios'
 
-const name = ref('Unknown')
+const router = useRouter()
+const store = useStore()
+setTheme(
+  themeMap[store.settings.general.darkMode as keyof typeof themeMap] ?? 'auto',
+)
 
-const getName = async () => {
-  const res = await fetch('/api/')
-  const data = await res.json()
-  name.value = data.name
+const mode = ref(0) // 0: Server Status
+const modes = [
+  'general.status',
+  'general.servers',
+  'general.setup',
+  'general.bop',
+  'general.report',
+  'general.launchACC',
+  'general.settings',
+]
+const pages = ['status', 'list', 'setup', 'bop', 'report', '', 'settings']
+const nav = (index: number) => {
+  mode.value = index
+  router.push({ name: pages[index] })
+}
+
+const launching = ref(false)
+const launchACC = () => {
+  launching.value = true
+  launchSteam('805550')
+  setTimeout(() => {
+    launching.value = false
+  }, 3000)
+}
+
+const showBulletin = ref(false)
+const bulletin = ref(undefined)
+const queryBulletin = async () => {
+  showBulletin.value = false
+  // const res = await axios.get('http://0.0.0.0:5005/bulletin')
+  const res = await axios.get('http://120.55.52.240:5005/bulletin')
+  if (res.data.success && res.data.msgInfo.id > store.general.msgId) {
+    bulletin.value = res.data.msgInfo
+    showBulletin.value = true
+    store.general.msgId = res.data.msgInfo.id
+  }
+}
+
+onMounted(() => {
+  queryBulletin()
+  for (let i = 0; i < pages.length; i++) {
+    if (pages[i] && window.location.hash.includes(pages[i] ?? 'nothing exists')) {
+      mode.value = i
+    }
+  }
+})
+
+const onHyperLinkClick = (e: Event) => {
+  let anchor = (e.target as HTMLElement).closest('a')
+  if (anchor) {
+    let targetHref = anchor.getAttribute('href')
+
+    if (targetHref) {
+      e.preventDefault()
+      let newUrl = anchor.href
+      window.open(newUrl, '_blank')
+    }
+  }
 }
 </script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <mdui-layout class="size-full overflow-hidden" @click="onHyperLinkClick">
+    <mdui-top-app-bar
+      variant="center-aligned"
+      scroll-target="#mainRouterView"
+      class="py-1 pl-3 pr-4 h-14 drag bg-transparent"
+    >
+      <mdui-button-icon class="p-2 mr-5">
+        <img src="../public/favicon.ico" alt="Website logo" />
+      </mdui-button-icon>
+      <mdui-top-app-bar-title class="text-xl mt-2">
+        <span class="title w-1/2 text-right">{{
+          translate('general.appName')
+        }}</span>
+        <span
+          class="mx-4 opacity-60"
+          style="font-family: 'Harmony OS Sans SC', serif; font-weight: 200"
+          >|</span
+        >
+        <span class="w-1/2" style="color: rgb(var(--mdui-color-primary))">{{
+          $t(modes[mode] ?? '')
+        }}</span>
+      </mdui-top-app-bar-title>
+    </mdui-top-app-bar>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-      <button class="green" @click="getName" aria-label="get name">
-        Name from API is: {{ name }}
-      </button>
-      <p>Edit <code>server/index.ts</code> to change what the API gets</p>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+    <mdui-navigation-rail
+      value="status"
+      divider
+      class="pb-4 bg-transparent w-16"
+      contained
+    >
+      <mdui-tooltip :content="translate('general.status')" placement="right">
+        <mdui-button-icon
+          class="mb-2"
+          :class="{
+            'bg-[rgb(var(--mdui-color-primary))] text-[rgb(var(--mdui-color-on-primary))]':
+              mode == 0,
+          }"
+          @click="nav(0)"
+        >
+          <mdui-icon-cell-tower--rounded></mdui-icon-cell-tower--rounded>
+        </mdui-button-icon>
+      </mdui-tooltip>
 
-  <RouterView />
+      <mdui-tooltip :content="translate('general.servers')" placement="right">
+        <mdui-button-icon
+          class="mb-2"
+          :class="{
+            'bg-[rgb(var(--mdui-color-primary))] text-[rgb(var(--mdui-color-on-primary))]':
+              mode == 1,
+          }"
+          @click="nav(1)"
+        >
+          <mdui-icon-view-list--rounded></mdui-icon-view-list--rounded>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip :content="translate('general.setup')" placement="right">
+        <mdui-button-icon
+          class="mb-2"
+          :class="{
+            'bg-[rgb(var(--mdui-color-primary))] text-[rgb(var(--mdui-color-on-primary))]':
+              mode == 2,
+          }"
+          @click="nav(2)"
+        >
+          <mdui-icon-display-settings--rounded></mdui-icon-display-settings--rounded>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip :content="translate('general.bop')" placement="right">
+        <mdui-button-icon
+          class="mb-2"
+          :class="{
+            'bg-[rgb(var(--mdui-color-primary))] text-[rgb(var(--mdui-color-on-primary))]':
+              mode == 3,
+          }"
+          @click="nav(3)"
+        >
+          <mdui-icon-balance--rounded></mdui-icon-balance--rounded>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip :content="translate('general.report')" placement="right">
+        <mdui-button-icon
+          class="mb-2"
+          :class="{
+            'bg-[rgb(var(--mdui-color-primary))] text-[rgb(var(--mdui-color-on-primary))]':
+              mode == 4,
+          }"
+          @click="nav(4)"
+        >
+          <mdui-icon-announcement></mdui-icon-announcement>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip
+        :content="translate('general.launchACC')"
+        placement="right"
+        slot="bottom"
+        v-if="mode !== 0"
+      >
+        <mdui-button-icon class="mb-2" @click="launchACC" :disabled="launching">
+          <Transition name="fade" mode="out-in">
+            <mdui-circular-progress
+              v-if="launching"
+              class="p-2"
+            ></mdui-circular-progress>
+            <mdui-icon-send--rounded v-else></mdui-icon-send--rounded>
+          </Transition>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip
+        :content="translate('general.settings')"
+        placement="right"
+        slot="bottom"
+      >
+        <mdui-button-icon
+          :class="{
+            'bg-[rgb(var(--mdui-color-primary))] text-[rgb(var(--mdui-color-on-primary))]':
+              mode == 6,
+          }"
+          @click="nav(6)"
+        >
+          <mdui-icon-settings--rounded></mdui-icon-settings--rounded>
+        </mdui-button-icon>
+      </mdui-tooltip>
+    </mdui-navigation-rail>
+
+    <mdui-layout-main
+      class="overflow-hidden transition-all"
+      :style="{
+        background: `rgba(var(--mdui-color-surface), ${store.settings.general.bgOpacity || 0.85})`,
+      }"
+    >
+      <router-view id="mainRouterView" v-slot="{ Component }">
+        <transition name="swipe-up" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </mdui-layout-main>
+
+    <mdui-dialog :open="showBulletin">
+      <div
+        slot="header"
+        class="flex flex-row justify-between items-center text-2xl"
+      >
+        <div>{{ bulletin?.title?.[store.settings.general.lang] }}</div>
+        <mdui-button-icon @click="showBulletin = false">
+          <mdui-icon-close--rounded></mdui-icon-close--rounded>
+        </mdui-button-icon>
+      </div>
+      <div
+        class="overflow-y-scroll max-h-[500px] w-[400px] scroll-wrapper-app-vue"
+      >
+        <div
+          v-html="marked(bulletin?.detail?.[store.settings.general.lang] || '')"
+        />
+      </div>
+    </mdui-dialog>
+  </mdui-layout>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<style>
+.swipe-up-enter-from {
+  transform: translateY(12vh);
+  opacity: 0;
+}
+.swipe-up-leave-to {
+  opacity: 0;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.swipe-up-enter-active,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 400ms var(--mdui-motion-easing-standard);
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+h1,
+h2,
+h3,
+h4,
+h5,
+.title {
+  font-family:
+    Google Sans,
+    Harmony OS Sans SC,
+    sans-serif;
 }
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
+a,
+div,
+span {
+  font-family:
+    Google Sans Text,
+    Harmony OS Sans SC,
+    sans-serif;
 }
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-button {
-  background-color: hsla(160, 100%, 37%, 1);
-  color: var(--color-background);
-  border: 0;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  margin: 1rem 0 0.5rem 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+.marked {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: bold;
+    font-size: 1.25rem;
+    line-height: 1.4;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  ul {
+    list-style: disc inside;
+    margin-bottom: 0.5rem;
   }
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.scroll-wrapper-app-vue {
+  scrollbar-color: rgba(var(--mdui-color-outline-variant), 0.8) transparent;
+  scrollbar-width: thin;
+  scrollbar-arrow-color: transparent;
+}
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
+.drag {
+  -webkit-app-region: drag;
+}
 
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+#mainRouterView {
+  padding-right: 1rem;
 }
 </style>

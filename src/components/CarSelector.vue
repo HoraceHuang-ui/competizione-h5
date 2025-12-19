@@ -45,7 +45,7 @@ const curCar = defineModel({
     :for-value="(car: [string, any]) => car?.[0]"
     :item-icon="
       (car: [string, any]) =>
-        `../../src/assets/carLogos/${car?.[1]?.manufacturer}.png`
+        `/carLogos/${car?.[1]?.manufacturer}.png`
     "
     :item-label="
       (item: string) => {

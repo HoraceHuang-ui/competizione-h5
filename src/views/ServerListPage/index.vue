@@ -19,7 +19,7 @@ import ServerListItem from '@/views/ServerListPage/components/ServerListItem.vue
 import { obj2Param } from '@/utils/utils'
 
 const curPage = ref(1)
-const servers = ref([])
+const servers = ref<any[]>([])
 const total = ref(0)
 const loading = ref(false)
 const groups = ['Mixed', 'GT3', 'GT4', 'GT2', 'GTC', 'TCX']
@@ -98,7 +98,7 @@ onMounted(() => {
 })
 
 const openExtUrl = (url: string) => {
-  window.electron.openExtLink(url)
+  window.open(url, '_blank')
 }
 const retrieveHipoleServers = () => {
   filters.value.name = 'HiPole.com |'

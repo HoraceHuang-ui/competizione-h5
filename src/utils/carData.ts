@@ -8,7 +8,7 @@ const data = {
       manufacturer: 'amr',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.22 + 8.3,
+      casterFunc: (v: number) => v * 0.22 + 8.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -32,7 +32,7 @@ const data = {
       manufacturer: 'amr',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.18 + 10.7,
+      casterFunc: (v: number) => v * 0.18 + 10.7,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [115, 125, 135, 145, 155, 165, 175, 185],
@@ -50,7 +50,7 @@ const data = {
       manufacturer: 'audi',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (16.8 - 8.8)) / 34 + 8.8,
+      casterFunc: (v: number) => (v * (16.8 - 8.8)) / 34 + 8.8,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [112, 132, 153, 174, 185, 195],
@@ -68,7 +68,7 @@ const data = {
       manufacturer: 'audi',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (16.8 - 8.8)) / 34 + 8.8,
+      casterFunc: (v: number) => (v * (16.8 - 8.8)) / 34 + 8.8,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [112, 132, 153, 174, 185, 195],
@@ -86,7 +86,7 @@ const data = {
       manufacturer: 'audi',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (16.8 - 8.8)) / 34 + 8.8,
+      casterFunc: (v: number) => (v * (16.8 - 8.8)) / 34 + 8.8,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [112, 132, 153, 174, 185, 195],
@@ -104,7 +104,7 @@ const data = {
       manufacturer: 'bentley',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.24 + 8.3,
+      casterFunc: (v: number) => v * 0.24 + 8.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -128,7 +128,7 @@ const data = {
       manufacturer: 'bentley',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.24 + 8.3,
+      casterFunc: (v: number) => v * 0.24 + 8.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -152,7 +152,7 @@ const data = {
       manufacturer: 'bmw',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.195 + 6.1,
+      casterFunc: (v: number) => v * 0.195 + 6.1,
       toeMins: [-0.2, 0],
       wheelRates: [
         [105, 120, 135, 150, 165, 180],
@@ -170,7 +170,7 @@ const data = {
       manufacturer: 'bmw',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.2075 + 6.7,
+      casterFunc: (v: number) => v * 0.2075 + 6.7,
       toeMins: [-0.2, 0],
       wheelRates: [
         [136, 146, 156, 166, 176, 186],
@@ -188,7 +188,7 @@ const data = {
       manufacturer: 'ferrari',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (13.8 - 8.5)) / 30 + 8.5,
+      casterFunc: (v: number) => (v * (13.8 - 8.5)) / 30 + 8.5,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -212,7 +212,7 @@ const data = {
       manufacturer: 'ferrari',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (20.6 - 5.0)) / 98 + 5.0,
+      casterFunc: (v: number) => (v * (20.6 - 5.0)) / 98 + 5.0,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [94, 101, 107, 113, 120, 126, 138.6, 151, 163.8, 176, 189],
@@ -230,7 +230,7 @@ const data = {
       manufacturer: 'ferrari',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (20.6 - 5.0)) / 98 + 5.0,
+      casterFunc: (v: number) => (v * (20.6 - 5.0)) / 98 + 5.0,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [94, 101, 107, 113, 120, 126, 138.6, 151, 163.8, 176, 189],
@@ -248,7 +248,7 @@ const data = {
       manufacturer: 'ford',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v =>
+      casterFunc: (v: number) =>
         [
           5.3, 5.5, 5.7, 5.9, 6.1, 6.2, 6.4, 6.6, 6.8, 6.9, 7.1, 7.3, 7.5, 7, 6,
           7.8, 8.0, 8.2, 8.3, 8.5, 8.7, 8.9, 9.0, 9.2, 9.4, 9.6, 9.7, 9.9, 10.1,
@@ -272,7 +272,7 @@ const data = {
       manufacturer: 'honda',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * (15.2 - 8.8) + 8.8,
+      casterFunc: (v: number) => v * (15.2 - 8.8) + 8.8,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [115, 124, 133, 142, 151, 160, 169, 178, 187, 196],
@@ -290,7 +290,7 @@ const data = {
       manufacturer: 'honda',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.19 + 7.2,
+      casterFunc: (v: number) => v * 0.19 + 7.2,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -314,7 +314,7 @@ const data = {
       manufacturer: 'jaguar',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.1825 + 4,
+      casterFunc: (v: number) => v * 0.1825 + 4,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -338,7 +338,7 @@ const data = {
       manufacturer: 'rex',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * (12 - 4.9) + 4.9,
+      casterFunc: (v: number) => v * (12 - 4.9) + 4.9,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [
@@ -359,7 +359,7 @@ const data = {
       manufacturer: 'lambo',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (15 - 6.2)) / 34 + 6.2,
+      casterFunc: (v: number) => (v * (15 - 6.2)) / 34 + 6.2,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [121, 144, 167, 190, 201, 212],
@@ -377,7 +377,7 @@ const data = {
       manufacturer: 'lambo',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (15 - 6.2)) / 34 + 6.2,
+      casterFunc: (v: number) => (v * (15 - 6.2)) / 34 + 6.2,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [121, 144, 167, 190, 201, 212],
@@ -395,7 +395,7 @@ const data = {
       manufacturer: 'lambo',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (15 - 6.2)) / 34 + 6.2,
+      casterFunc: (v: number) => (v * (15 - 6.2)) / 34 + 6.2,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [121, 144, 167, 190, 201, 212],
@@ -413,7 +413,7 @@ const data = {
       manufacturer: 'lexus',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.19 + 7.9,
+      casterFunc: (v: number) => v * 0.19 + 7.9,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [96, 115, 134, 154, 173, 192],
@@ -431,7 +431,7 @@ const data = {
       manufacturer: 'mclaren',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.24 + 5.3,
+      casterFunc: (v: number) => v * 0.24 + 5.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [126, 136, 146, 156, 166, 176],
@@ -449,7 +449,7 @@ const data = {
       manufacturer: 'mclaren',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (8 - 5.3)) / 11 + 5.3,
+      casterFunc: (v: number) => (v * (8 - 5.3)) / 11 + 5.3,
       toeMins: [-0.48, -0.1],
       wheelRates: [
         [118, 134, 150, 166, 182, 198, 214, 230],
@@ -467,7 +467,7 @@ const data = {
       manufacturer: 'mclaren',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (16.3 - 5.3)) / 46 + 5.3,
+      casterFunc: (v: number) => (v * (16.3 - 5.3)) / 46 + 5.3,
       toeMins: [-0.48, -0.1],
       wheelRates: [
         [118, 134, 150, 166, 182, 198, 214, 230],
@@ -485,7 +485,7 @@ const data = {
       manufacturer: 'amg',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * (14.1 - 6) + 6,
+      casterFunc: (v: number) => v * (14.1 - 6) + 6,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [130, 143, 155, 171, 187, 202],
@@ -503,7 +503,7 @@ const data = {
       manufacturer: 'amg',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * (14.1 - 6) + 6,
+      casterFunc: (v: number) => v * (14.1 - 6) + 6,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [130, 143, 155, 171, 187, 202],
@@ -521,7 +521,7 @@ const data = {
       manufacturer: 'nissan',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.205 + 6,
+      casterFunc: (v: number) => v * 0.205 + 6,
       toeMins: [-0.2, 0],
       wheelRates: [
         [122, 132, 142, 152, 162, 172, 182],
@@ -539,7 +539,7 @@ const data = {
       manufacturer: 'nissan',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.18 + 12.5,
+      casterFunc: (v: number) => v * 0.18 + 12.5,
       toeMins: [-0.2, 0],
       wheelRates: [
         [136, 146, 156, 166, 176, 186],
@@ -557,7 +557,7 @@ const data = {
       manufacturer: 'porsche',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.1 + 7.3,
+      casterFunc: (v: number) => v * 0.1 + 7.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [83, 100, 116, 133, 149, 166],
@@ -575,7 +575,7 @@ const data = {
       manufacturer: 'porsche',
       competitive: false,
       tirePressureMin: 20.3,
-      casterFunc: v => v * 0.2 + 4.4,
+      casterFunc: (v: number) => v * 0.2 + 4.4,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [100.5, 110, 114, 119, 127, 137, 141.5, 146, 155, 173.5],
@@ -593,7 +593,7 @@ const data = {
       manufacturer: 'porsche',
       competitive: true,
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (12.4 - 6.5)) / 30 + 6.5,
+      casterFunc: (v: number) => (v * (12.4 - 6.5)) / 30 + 6.5,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [100.5, 110, 114, 119, 127, 137, 141.5, 146, 155, 173.5],
@@ -614,7 +614,7 @@ const data = {
       shortName: 'A110',
       manufacturer: 'alpine',
       tirePressureMin: 17,
-      casterFunc: v => (v * (13.7 - 7.3)) / 34 + 7.3,
+      casterFunc: (v: number) => (v * (13.7 - 7.3)) / 34 + 7.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [62.5, 72.5, 82.5, 92.5],
@@ -631,7 +631,7 @@ const data = {
       shortName: 'V8',
       manufacturer: 'amr',
       tirePressureMin: 17,
-      casterFunc: v => v * 0.18 + 10.7,
+      casterFunc: (v: number) => v * 0.18 + 10.7,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [80, 90, 100, 110],
@@ -648,7 +648,7 @@ const data = {
       shortName: 'R8',
       manufacturer: 'audi',
       tirePressureMin: 17,
-      casterFunc: v => (v * (13.3 - 6.6)) / 34 + 6.6,
+      casterFunc: (v: number) => (v * (13.3 - 6.6)) / 34 + 6.6,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [142, 160],
@@ -665,7 +665,7 @@ const data = {
       shortName: 'M4',
       manufacturer: 'bmw',
       tirePressureMin: 17,
-      casterFunc: v => 8.4,
+      casterFunc: (v: number) => 8.4,
       toeMins: [-0.2, 0.0],
       wheelRates: [
         [165.888, 184.32, 202.752],
@@ -682,7 +682,7 @@ const data = {
       shortName: 'Camaro',
       manufacturer: 'chevrolet',
       tirePressureMin: 17,
-      casterFunc: v => 7.1,
+      casterFunc: (v: number) => 7.1,
       toeMins: [-0.2, 0.0],
       wheelRates: [
         [165.888, 184.32, 202.752],
@@ -699,7 +699,7 @@ const data = {
       shortName: 'G55',
       manufacturer: 'ginetta',
       tirePressureMin: 17,
-      casterFunc: v => v * 0.2625 + 3.7,
+      casterFunc: (v: number) => v * 0.2625 + 3.7,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [80, 90, 100, 110, 120],
@@ -716,7 +716,7 @@ const data = {
       shortName: 'X-Bow',
       manufacturer: 'ktm',
       tirePressureMin: 17,
-      casterFunc: v => v * 0.1925 + 1.7,
+      casterFunc: (v: number) => v * 0.1925 + 1.7,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [87, 97, 107, 117, 127],
@@ -733,7 +733,7 @@ const data = {
       shortName: 'GT MC',
       manufacturer: 'maserati',
       tirePressureMin: 17,
-      casterFunc: v => v * 0.22 + 3.4,
+      casterFunc: (v: number) => v * 0.22 + 3.4,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [116, 151, 186],
@@ -750,7 +750,7 @@ const data = {
       shortName: '570S',
       manufacturer: 'mclaren',
       tirePressureMin: 17,
-      casterFunc: v => v * 0.245 + 5.3,
+      casterFunc: (v: number) => v * 0.245 + 5.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [140, 175],
@@ -767,7 +767,7 @@ const data = {
       shortName: 'AMG',
       manufacturer: 'amg',
       tirePressureMin: 17,
-      casterFunc: v => v * 0.18 + 9.2,
+      casterFunc: (v: number) => v * 0.18 + 9.2,
       toeMins: [-0.2, 0.0],
       wheelRates: [[78, 88, 104], [66]],
       steeringRatioMin: 10,
@@ -781,7 +781,7 @@ const data = {
       shortName: '718 Cayman',
       manufacturer: 'porsche',
       tirePressureMin: 17,
-      casterFunc: v => (v * (10.2 - 7.3)) / 28 + 7.3,
+      casterFunc: (v: number) => (v * (10.2 - 7.3)) / 28 + 7.3,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [99, 108, 116, 124],
@@ -801,7 +801,7 @@ const data = {
       shortName: '488 Challenge Evo',
       manufacturer: 'ferrari',
       tirePressureMin: 17,
-      casterFunc: v => (v * (20.6 - 5.0)) / 98 + 5.0,
+      casterFunc: (v: number) => (v * (20.6 - 5.0)) / 98 + 5.0,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [151, 163.8],
@@ -817,7 +817,7 @@ const data = {
       shortName: 'ST Evo2',
       manufacturer: 'lambo',
       tirePressureMin: 20.3,
-      casterFunc: v => (v * (17.4 - 10.7)) / 34 + 10.7,
+      casterFunc: (v: number) => (v * (17.4 - 10.7)) / 34 + 10.7,
       toeMins: [-0.4, -0.4],
       wheelRates: [
         [121, 144, 167, 190, 201, 212],
@@ -833,7 +833,7 @@ const data = {
       shortName: '992 Cup',
       manufacturer: 'porsche',
       tirePressureMin: 20.3,
-      casterFunc: v => 14.8,
+      casterFunc: (v: number) => 14.8,
       toeMins: [-0.4, -0.4],
       wheelRates: [[1], [1]],
       steeringRatioMin: 11,
@@ -850,7 +850,7 @@ const data = {
       shortName: 'M2 CS',
       manufacturer: 'bmw',
       tirePressureMin: 17,
-      casterFunc: v => 8.5,
+      casterFunc: (v: number) => 8.5,
       toeMins: [-0.2, 0],
       wheelRates: [
         [162, 180, 198],

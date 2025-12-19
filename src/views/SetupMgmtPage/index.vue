@@ -4,7 +4,7 @@ import '@mdui/icons/insert-drive-file--rounded.js'
 
 import { computed, ref, watch } from 'vue'
 import { snackbar } from 'mdui'
-import carData from '@/utils/carData'
+import carData from '@/utils/carData.ts'
 import SetupDisplay from '@/views/SetupMgmtPage/components/SetupDisplay.vue'
 import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import '@mdui/icons/arrow-drop-down--rounded.js'
@@ -16,7 +16,7 @@ import { translate } from '@/i18n'
 import SetupCode from '@/views/SetupMgmtPage/components/SetupCode.vue'
 import CarSelector from '@/components/CarSelector.vue'
 import TrackSelector from '@/components/TrackSelector.vue'
-import { getCarByKey } from '../../utils/utils'
+import { getCarByKey } from '@/utils/utils'
 
 const store = useStore()
 
@@ -63,33 +63,6 @@ const files = ref(
       },
 )
 
-const enableSearch = computed(() => {
-  return {
-    left: curTrack.value.left !== undefined && curCar.value.left !== undefined,
-    right:
-      curTrack.value.right !== undefined && curCar.value.right !== undefined,
-  }
-})
-
-watch(
-  [curCar, curTrack],
-  async () => {
-    if (enableSearch.value.left) {
-      setupList.value.left = await window.fs.setupList(
-        curCar.value.left?.value,
-        curTrack.value.left?.value,
-      )
-    }
-    if (enableSearch.value.right) {
-      setupList.value.right = await window.fs.setupList(
-        curCar.value.right?.value,
-        curTrack.value.right?.value,
-      )
-    }
-  },
-  { immediate: false, deep: true },
-)
-
 watch(
   files,
   () => {
@@ -98,61 +71,6 @@ watch(
   },
   { deep: true },
 )
-
-const filteredSetupList = computed(() => {
-  return {
-    left: setupList.value.left.filter((file: string) =>
-      file.toLowerCase().includes(fileSearch.value.left.toLowerCase()),
-    ),
-    right: setupList.value.right.filter((file: string) =>
-      file.toLowerCase().includes(fileSearch.value.right.toLowerCase()),
-    ),
-  }
-})
-
-const readOrCreateFile = async (side: Side) => {
-  if (files.value[side] !== undefined) {
-    // 如果已经有文件了，直接显示
-    return
-  }
-  const fileName = fileSearch.value[side]
-  if (fileName === '') {
-    snackbar({
-      message: translate('setup.emptyFileName'),
-      autoCloseDelay: 3000,
-    })
-    return
-  }
-  const content = await window.fs.setupFile(
-    curCar.value[side]?.value,
-    curTrack.value[side]?.value,
-    fileName.endsWith('.json') ? fileName : `${fileName}.json`,
-  )
-  const jsonContent = JSON.parse(content)
-  if (!jsonContent.carName) {
-    snackbar({
-      message: translate('setup.invalidJSON'),
-      autoCloseDelay: 3000,
-    })
-    return
-  }
-  if (!Object.keys(carData[curGroup.value]).includes(jsonContent.carName)) {
-    snackbar({
-      message: translate('setup.invalidSeries', { series: curGroup.value }),
-      autoCloseDelay: 3000,
-    })
-    return
-  }
-  files.value[side] = jsonContent
-}
-
-const onSelectGroup = (group: string) => {
-  curGroup.value = group
-  curCar.value = {
-    left: undefined,
-    right: undefined,
-  }
-}
 
 const triggerFileInput = (side: 'left' | 'right') => {
   if (side === 'left') {
@@ -319,10 +237,6 @@ const importSetup = (setup: any, fileName: string) => {
   }
   codeShareOpen.value = undefined
 }
-
-const openExtUrl = (url: string) => {
-  window.electron.openExtLink(url)
-}
 </script>
 
 <template>
@@ -405,82 +319,6 @@ const openExtUrl = (url: string) => {
                   : $t('setup.dragFile')
               }}
             </p>
-
-            <div
-              class="w-full absolute bottom-0 left-0 right-0 flex flex-col items-center"
-              v-if="!isDragging[side as Side]"
-            >
-              <div class="text-sm font-light">{{ $t('setup.loadDocs') }}</div>
-              <div class="flex flex-row justify-center items-center flex-wrap">
-                <ChipSelect
-                  v-model="curGroup"
-                  :chip-class="`mx-2 mt-2 bg-[${seriesColorMap[curGroup]}]`"
-                  dropdown-placement="top"
-                  :items="groups"
-                  @select="onSelectGroup"
-                  :disabled="
-                    files['left'] !== undefined || files['right'] !== undefined
-                  "
-                >
-                </ChipSelect>
-
-                <CarSelector v-model="curCar[side as Side]" :group="curGroup" />
-                <TrackSelector v-model="curTrack[side as Side]" />
-              </div>
-              <mdui-dropdown
-                :disabled="
-                  !enableSearch[side as Side] ||
-                  setupList[side as Side].length == 0
-                "
-                placement="top"
-              >
-                <mdui-text-field
-                  slot="trigger"
-                  variant="outlined"
-                  :disabled="!enableSearch[side as Side]"
-                  :value="fileSearch[side as Side]"
-                  @input="fileSearch[side as Side] = $event.target.value"
-                  :placeholder="$t('setup.inputPlaceholder')"
-                  style="
-                    transition: all var(--mdui-motion-duration-short4)
-                      var(--mdui-motion-easing-standard);
-                  "
-                  class="mt-2 cursor-text"
-                  :class="{
-                    'pl-4 pr-6': side === 'left',
-                    'pl-6 pr-4': side === 'right',
-                    'opacity-30': !enableSearch[side as Side],
-                  }"
-                >
-                  <mdui-button-icon
-                    slot="end-icon"
-                    class="text-[rgb(var(--mdui-color-primary))]"
-                    :disabled="fileSearch[side as Side] == ''"
-                    @click="readOrCreateFile(side as Side)"
-                  >
-                    <mdui-icon-check--rounded></mdui-icon-check--rounded>
-                  </mdui-button-icon>
-                </mdui-text-field>
-
-                <mdui-menu>
-                  <ScrollWrapper
-                    :height="
-                      setupList[side as Side].length > 8 ? '390px' : '100%'
-                    "
-                  >
-                    <mdui-menu-item
-                      v-for="file in fileSearch[side as Side].length == 0
-                        ? setupList[side as Side]
-                        : filteredSetupList[side as Side]"
-                      :key="file"
-                      @click="fileSearch[side as Side] = file"
-                    >
-                      {{ file }}
-                    </mdui-menu-item>
-                  </ScrollWrapper>
-                </mdui-menu>
-              </mdui-dropdown>
-            </div>
           </div>
         </Transition>
         <Transition name="swipe">
@@ -525,47 +363,6 @@ const openExtUrl = (url: string) => {
         class="w-[350px]"
         @closeDialog="codeShareOpen = undefined"
       />
-    </mdui-dialog>
-
-    <mdui-dialog
-      :headline="$t('setup.importSetup')"
-      :open="fileImportOpen"
-      @close="() => {}"
-    >
-      <div class="flex flex-col w-[300px]">
-        <div class="flex flex-row">
-          <mdui-icon-insert-drive-file--rounded
-            class="h-[1.125rem] ml-2 text-[rgb(var(--mdui-color-primary))]"
-          ></mdui-icon-insert-drive-file--rounded>
-          <div class="ml-1 wrap-anywhere">
-            {{ fileSearch[fileImportOpen] }}
-          </div>
-        </div>
-        <div class="flex flex-row mt-2">
-          <mdui-icon-directions-car--rounded
-            class="h-[1.125rem] ml-2 text-[rgb(var(--mdui-color-primary))]"
-          ></mdui-icon-directions-car--rounded>
-          <div class="ml-1 truncate">
-            {{ getCarByKey(files[fileImportOpen]?.carName)?.name }}
-          </div>
-        </div>
-        <TrackSelector
-          v-model="curSaveTrack"
-          dropdown-placement="right"
-          chip-class="mt-2 w-max"
-        />
-
-        <mdui-button
-          variant="filled"
-          class="mt-6 mb-2 font-bold"
-          :disabled="!curSaveTrack"
-          @click="saveSetup"
-          >{{ $t('setup.saveAndView') }}</mdui-button
-        >
-        <mdui-button variant="text" @click="closeFileSaveDialog">{{
-          $t('setup.viewOnly')
-        }}</mdui-button>
-      </div>
     </mdui-dialog>
 
     <div

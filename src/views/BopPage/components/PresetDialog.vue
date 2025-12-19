@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO: implement exporting BoP
 import { onMounted, ref, watch } from 'vue'
 import '@mdui/icons/attach-file--rounded.js'
 import '@mdui/icons/keyboard-arrow-down--rounded.js'
@@ -7,7 +8,7 @@ import '@mdui/icons/help-outline--rounded.js'
 import { useStore } from '@/store'
 import presetTemplate from './presetTemplate'
 import { snackbar } from 'mdui'
-import { formatBopData, json2Preset, parsePreset } from '@/utils/utils'
+import { formatBopData, json2Preset } from '@/utils/utils'
 import { translate } from '@/i18n'
 import ScrollWrapper from '@/components/ScrollWrapper.vue'
 
@@ -28,28 +29,6 @@ const createFile = ref(false)
 const fileName = ref('')
 const presetContent = ref('')
 const loading = ref(false)
-const exportToPre = ref(true)
-const exportToJson = ref(false)
-const overwriteJson = ref(true)
-
-const openLink = (url: string) => {
-  window.electron.openExtLink(url)
-}
-
-const selectExe = async () => {
-  window.dialog
-    .show({
-      title: translate('bop.fileSelectTitle'),
-      properties: ['openFile'],
-      filters: [{ name: 'EXE', extensions: ['exe'] }],
-    })
-    .then(resp => {
-      if (resp.length > 0) {
-        store.presets.serverExePath = resp[0]
-        getPresetList()
-      }
-    })
-}
 
 const presetList = ref<string[]>([])
 const getPresetList = () => {

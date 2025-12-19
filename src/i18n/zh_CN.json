@@ -351,6 +351,7 @@
     "select": "选择",
     "reselect": "重新选择",
     "saveAsPreset": "保存为预设",
+    "presetName": "预设名：",
     "newPreset": "新预设",
     "fileInputPlaceholder": "请输入文件名",
     "fileSelectPlaceholder": "请选择预设文件",

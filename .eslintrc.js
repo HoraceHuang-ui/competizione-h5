@@ -17,6 +17,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/multiline-html-element-content-newline': 'error',
+    'vue/no-deprecated-slot-attribute': 'off',
     'prettier/prettier': [
       'warn',
       {

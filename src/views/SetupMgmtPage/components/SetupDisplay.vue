@@ -23,7 +23,7 @@ import { translate } from '@/i18n'
 import HelpTooltip from '@/views/SetupMgmtPage/components/HelpTooltip.vue'
 import { ref } from 'vue'
 import SetupCode from '@/views/SetupMgmtPage/components/SetupCode.vue'
-import carData from '@/utils/carData'
+import carData from '@/utils/carData.ts'
 
 const store = useStore()
 const enLabel = store.settings.setup.setupLabelEn
