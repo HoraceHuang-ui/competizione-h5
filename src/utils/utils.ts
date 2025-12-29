@@ -185,11 +185,16 @@ export const launchSteam = (id: string) => {
 export const brotliCompress = async (input: string) => {
   const encoded = new TextEncoder().encode(input)
   const compressed = await brotli.compress(encoded)
-  return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(compressed))))
+  return btoa(
+    String.fromCharCode.apply(null, Array.from(new Uint8Array(compressed))),
+  )
 }
 
 export const brotliDecompress = async (input: string) => {
   const buf = Uint8Array.from(atob(input), c => c.charCodeAt(0))
   const decompressed = await brotli.decompress(buf)
   return new TextDecoder().decode(decompressed)
+}
+export const openLink = (url: string) => {
+  window.open(url, '_blank')
 }

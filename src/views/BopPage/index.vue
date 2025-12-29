@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
 import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import { darkModeSettings, trackIndex } from '@/utils/enums'
 import {
@@ -55,18 +55,10 @@ watch(
   { immediate: true },
 )
 
-const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
-const isDark = ref(
-  store.settings.general.darkMode === darkModeSettings.AUTO
-    ? darkModePreference.matches
-    : store.settings.general.darkMode !== darkModeSettings.LIGHT,
-)
-darkModePreference.addEventListener('change', e => {
-  isDark.value =
-    store.settings.general.darkMode === darkModeSettings.AUTO
-      ? e.matches
-      : store.settings.general.darkMode !== darkModeSettings.LIGHT
-})
+const { isDark } = inject('isDark') as {
+  isDark: any
+  setDark: (val: boolean) => void
+}
 
 const queryData = () => {
   loading.value = true

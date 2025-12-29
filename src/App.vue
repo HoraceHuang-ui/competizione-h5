@@ -7,14 +7,16 @@ import '@mdui/icons/send--rounded.js'
 import '@mdui/icons/balance--rounded.js'
 import '@mdui/icons/close--rounded.js'
 import '@mdui/icons/announcement.js'
-import { onMounted, ref } from 'vue'
+import '@mdui/icons/download.js'
+import '@mdui/icons/coffee--rounded.js'
+import { onMounted, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
 import { setTheme } from 'mdui'
-import { themeMap } from '@/utils/enums'
+import { darkModeSettings, themeMap } from '@/utils/enums'
 import { translate } from '@/i18n'
 import { marked } from 'marked'
-import { launchSteam } from '@/utils/utils'
+import { launchSteam, openLink } from '@/utils/utils'
 import axios from 'axios'
 
 const router = useRouter()
@@ -22,6 +24,9 @@ const store = useStore()
 setTheme(
   themeMap[store.settings.general.darkMode as keyof typeof themeMap] ?? 'auto',
 )
+
+const donationOpen1 = ref(false)
+const donationOpen2 = ref(false)
 
 const mode = ref(0) // 0: Server Status
 const modes = [
@@ -38,6 +43,27 @@ const nav = (index: number) => {
   mode.value = index
   router.push({ name: pages[index] })
 }
+
+const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
+
+const isDark = ref(
+  store.settings.general.darkMode === darkModeSettings.AUTO
+    ? darkModePreference.matches
+    : store.settings.general.darkMode !== darkModeSettings.LIGHT,
+)
+darkModePreference.addEventListener('change', e => {
+  isDark.value =
+    store.settings.general.darkMode === darkModeSettings.AUTO
+      ? e.matches
+      : store.settings.general.darkMode !== darkModeSettings.LIGHT
+})
+
+provide('isDark', {
+  isDark,
+  setDark(val: boolean) {
+    isDark.value = val
+  },
+})
 
 const launching = ref(false)
 const launchACC = () => {
@@ -64,7 +90,10 @@ const queryBulletin = async () => {
 onMounted(() => {
   queryBulletin()
   for (let i = 0; i < pages.length; i++) {
-    if (pages[i] && window.location.hash.includes(pages[i] ?? 'nothing exists')) {
+    if (
+      pages[i] &&
+      window.location.hash.includes(pages[i] ?? 'nothing exists')
+    ) {
       mode.value = i
     }
   }
@@ -86,26 +115,51 @@ const onHyperLinkClick = (e: Event) => {
 <template>
   <mdui-layout class="size-full overflow-hidden" @click="onHyperLinkClick">
     <mdui-top-app-bar
-      variant="center-aligned"
+      variant="small"
       scroll-target="#mainRouterView"
-      class="py-1 pl-3 pr-4 h-14 drag bg-transparent"
+      class="pt-1 pl-3 pr-4 drag bg-transparent flex flex-row justify-between h-16 items-center"
     >
-      <mdui-button-icon class="p-2 mr-5">
-        <img src="../public/favicon.ico" alt="Website logo" />
-      </mdui-button-icon>
-      <mdui-top-app-bar-title class="text-xl mt-2">
-        <span class="title w-1/2 text-right">{{
-          translate('general.appName')
-        }}</span>
-        <span
-          class="mx-4 opacity-60"
-          style="font-family: 'Harmony OS Sans SC', serif; font-weight: 200"
-          >|</span
+      <div class="flex flex-row">
+        <mdui-button-icon class="p-2 mr-5">
+          <img src="../public/favicon.ico" alt="Website logo" />
+        </mdui-button-icon>
+        <div class="text-base mt-2">
+          <span
+            class="font-bold title mr-2"
+            style="color: rgb(var(--mdui-color-primary))"
+            >{{ $t(modes[mode] ?? '') }}</span
+          >
+          |
+          <span class="ml-2 opacity-70">{{ $t('general.appName') }}</span>
+        </div>
+      </div>
+      <div class="flex flex-row">
+        <mdui-tooltip :content="$t('settings.donateButton')">
+          <mdui-button-icon @click="donationOpen1 = true"
+            ><mdui-icon-coffee--rounded></mdui-icon-coffee--rounded>
+          </mdui-button-icon>
+        </mdui-tooltip>
+        <mdui-button-icon
+          class="mr-2"
+          :class="{ invert: isDark }"
+          @click="
+            openLink('https://github.com/HoraceHuang-ui/Competizione-Companion')
+          "
         >
-        <span class="w-1/2" style="color: rgb(var(--mdui-color-primary))">{{
-          $t(modes[mode] ?? '')
-        }}</span>
-      </mdui-top-app-bar-title>
+          <img src="@/assets/github-mark.png" class="p-2 pt-1.5" />
+        </mdui-button-icon>
+        <mdui-button
+          variant="tonal"
+          @click="
+            openLink(
+              'https://gitcode.com/HoraceHuang-ui/Competizione-Companion/releases',
+            )
+          "
+        >
+          <mdui-icon-download slot="icon"></mdui-icon-download>
+          下载客户端
+        </mdui-button>
+      </div>
     </mdui-top-app-bar>
 
     <mdui-navigation-rail
@@ -245,6 +299,48 @@ const onHyperLinkClick = (e: Event) => {
       </div>
     </mdui-dialog>
   </mdui-layout>
+
+  <mdui-dialog
+    :headline="$t('settings.donation1Title')"
+    :open="donationOpen1"
+    @close="donationOpen1 = false"
+  >
+    <div>{{ $t('settings.donation1Msg') }}</div>
+    <div class="flex flex-row mt-2">
+      <img src="./assets/wechat.jpg" width="250" class="mr-2 donation-pic" />
+      <img src="./assets/alipay.jpg" width="250" class="donation-pic" />
+    </div>
+    <mdui-button slot="action" variant="text" @click="donationOpen1 = false">{{
+      $t('settings.donation1Cancel')
+    }}</mdui-button>
+    <mdui-button
+      slot="action"
+      class="font-bold"
+      @click="
+        () => {
+          donationOpen1 = false
+          donationOpen2 = true
+        }
+      "
+      >{{ $t('settings.donation1Confirm') }}</mdui-button
+    >
+  </mdui-dialog>
+
+  <mdui-dialog
+    :headline="$t('settings.donation2Title')"
+    :open="donationOpen2"
+    @close="donationOpen2 = false"
+  >
+    <div>
+      {{ $t('settings.donation2Msg') }}
+    </div>
+    <mdui-button
+      slot="action"
+      @click="donationOpen2 = false"
+      class="title font-bold"
+      >{{ $t('settings.donation2Confirm') }}</mdui-button
+    >
+  </mdui-dialog>
 </template>
 
 <style>
@@ -313,6 +409,10 @@ span {
 
 .no-drag {
   -webkit-app-region: no-drag;
+}
+
+.donation-pic {
+  border-radius: var(--mdui-shape-corner-large);
 }
 
 #mainRouterView {

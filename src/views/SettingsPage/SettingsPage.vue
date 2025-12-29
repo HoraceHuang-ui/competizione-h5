@@ -9,31 +9,24 @@ import '@mdui/icons/update--rounded.js'
 import '@mdui/icons/image--rounded.js'
 import '@mdui/icons/undo--rounded.js'
 import '@mdui/icons/help-outline--rounded.js'
-import { computed, ref, watch } from 'vue'
-import { getColorFromImage, setColorScheme, setTheme, snackbar } from 'mdui'
+import { computed, inject, ref, watch, type Ref } from 'vue'
+import { setColorScheme, setTheme } from 'mdui'
 import { themeMap, darkModeSettings, trackCarDispSettings } from '@/utils/enums'
 import { availableLangCodes, switchLang, translate, langMap } from '@/i18n'
 import { ChromePicker } from 'vue-color'
 import FavDialog from '@/views/SettingsPage/components/FavDialog.vue'
+import { openLink } from '@/utils/utils'
 
 const showFavDialog = ref(false)
 
 const store = useStore()
-const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
-const isDark = ref(
-  store.settings.general.darkMode === darkModeSettings.AUTO
-    ? darkModePreference.matches
-    : store.settings.general.darkMode !== darkModeSettings.LIGHT,
-)
-darkModePreference.addEventListener('change', e => {
-  isDark.value =
-    store.settings.general.darkMode === darkModeSettings.AUTO
-      ? e.matches
-      : store.settings.general.darkMode !== darkModeSettings.LIGHT
-})
 
-const donationOpen1 = ref(false)
-const donationOpen2 = ref(false)
+const dark = inject('isDark') as {
+  isDark: Ref<boolean>
+  setDark: (val: boolean) => void
+}
+
+const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
 
 if (!localStorage.lang) {
   localStorage.lang = 'en_US'
@@ -47,6 +40,18 @@ const dispItems = computed(() => {
     return [1, 2, 3]
   }
 })
+
+const darkModeChange = (event: Event) => {
+  const mode = event.target.value
+  store.settings.general.darkMode = mode
+  setTheme(themeMap[mode])
+
+  dark.setDark(
+    store.settings.general.darkMode === darkModeSettings.AUTO
+      ? darkModePreference.matches
+      : store.settings.general.darkMode !== darkModeSettings.LIGHT,
+  )
+}
 
 const resetDialogOpen = ref(false)
 
@@ -62,19 +67,6 @@ const resetSettings = () => {
       'settings.serverDownMsgDefault',
     )
   }
-}
-
-const darkModeChange = (event: Event) => {
-  const mode = event.target.value
-  store.settings.general.darkMode = mode
-  setTheme(themeMap[mode])
-  isDark.value =
-    store.settings.general.darkMode === darkModeSettings.AUTO
-      ? darkModePreference.matches
-      : store.settings.general.darkMode !== darkModeSettings.LIGHT
-}
-const openLink = (url: string) => {
-  window.open(url, '_blank')
 }
 
 const onLangSelect = () => {
@@ -152,19 +144,19 @@ watch(
                 >
                   <mdui-segmented-button
                     class="border border-[rgb(var(--mdui-color-outline-variant))]"
-                    value="1"
+                    :value="1"
                   >
                     <mdui-icon-light-mode--rounded></mdui-icon-light-mode--rounded>
                   </mdui-segmented-button>
                   <mdui-segmented-button
                     class="border border-[rgb(var(--mdui-color-outline-variant))]"
-                    value="2"
+                    :value="2"
                   >
                     <mdui-icon-brightness-auto--rounded></mdui-icon-brightness-auto--rounded>
                   </mdui-segmented-button>
                   <mdui-segmented-button
                     class="border border-[rgb(var(--mdui-color-outline-variant))]"
-                    value="3"
+                    :value="3"
                   >
                     <mdui-icon-dark-mode--outlined></mdui-icon-dark-mode--outlined>
                   </mdui-segmented-button>
@@ -285,7 +277,7 @@ watch(
                 <div class="flex flex-row justify-end items-center">
                   <mdui-button-icon
                     class="mr-2"
-                    :class="{ invert: isDark }"
+                    :class="{ invert: dark.isDark.value }"
                     @click="
                       openLink(
                         'https://github.com/HoraceHuang-ui/Competizione-Companion',
@@ -295,67 +287,6 @@ watch(
                     <img src="../../assets/github-mark.png" class="p-1" />
                   </mdui-button-icon>
                 </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="item-in">
-                <div>{{ $t('settings.donate') }}</div>
-                <mdui-button variant="tonal" @click="donationOpen1 = true">
-                  {{ $t('settings.donateButton') }}
-                </mdui-button>
-
-                <mdui-dialog
-                  :headline="$t('settings.donation1Title')"
-                  :open="donationOpen1"
-                  @close="donationOpen1 = false"
-                >
-                  <div>{{ $t('settings.donation1Msg') }}</div>
-                  <div class="flex flex-row mt-2">
-                    <img
-                      src="../../assets/wechat.jpg"
-                      width="250"
-                      class="mr-2 donation-pic"
-                    />
-                    <img
-                      src="../../assets/alipay.jpg"
-                      width="250"
-                      class="donation-pic"
-                    />
-                  </div>
-                  <mdui-button
-                    slot="action"
-                    variant="text"
-                    @click="donationOpen1 = false"
-                    >{{ $t('settings.donation1Cancel') }}</mdui-button
-                  >
-                  <mdui-button
-                    slot="action"
-                    class="font-bold"
-                    @click="
-                      () => {
-                        donationOpen1 = false
-                        donationOpen2 = true
-                      }
-                    "
-                    >{{ $t('settings.donation1Confirm') }}</mdui-button
-                  >
-                </mdui-dialog>
-
-                <mdui-dialog
-                  :headline="$t('settings.donation2Title')"
-                  :open="donationOpen2"
-                  @close="donationOpen2 = false"
-                >
-                  <div>
-                    {{ $t('settings.donation2Msg') }}
-                  </div>
-                  <mdui-button
-                    slot="action"
-                    @click="donationOpen2 = false"
-                    class="title font-bold"
-                    >{{ $t('settings.donation2Confirm') }}</mdui-button
-                  >
-                </mdui-dialog>
               </div>
             </div>
             <div class="larger mt-4">
@@ -384,7 +315,7 @@ watch(
                     >{{ $t('settings.hipoleTooltip') }}
                   </div>
                   <img
-                    :src="`/hipole/${$t('langCode')}_${isDark ? 'dark' : 'light'}.png`"
+                    :src="`/hipole/${$t('langCode')}_${dark.isDark.value ? 'dark' : 'light'}.png`"
                     class="inline mx-4 opacity-55 hover:opacity-100 transition-all"
                     width="130"
                   />
@@ -553,10 +484,6 @@ watch(
   scrollbar-color: rgba(var(--mdui-color-outline-variant), 0.8) transparent;
   scrollbar-width: thin;
   scrollbar-arrow-color: transparent;
-}
-
-.donation-pic {
-  border-radius: var(--mdui-shape-corner-large);
 }
 
 .credits::part(popup) {
