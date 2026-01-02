@@ -9,10 +9,10 @@ import '@mdui/icons/update--rounded.js'
 import '@mdui/icons/image--rounded.js'
 import '@mdui/icons/undo--rounded.js'
 import '@mdui/icons/help-outline--rounded.js'
-import { computed, inject, ref, watch, type Ref } from 'vue'
+import { computed, inject, ref, type Ref, watch } from 'vue'
 import { setColorScheme, setTheme } from 'mdui'
-import { themeMap, darkModeSettings, trackCarDispSettings } from '@/utils/enums'
-import { availableLangCodes, switchLang, translate, langMap } from '@/i18n'
+import { darkModeSettings, themeMap, trackCarDispSettings } from '@/utils/enums'
+import { availableLangCodes, langMap, switchLang, translate } from '@/i18n'
 import { ChromePicker } from 'vue-color'
 import FavDialog from '@/views/SettingsPage/components/FavDialog.vue'
 import { openLink } from '@/utils/utils'
@@ -397,6 +397,32 @@ watch(
                   <p class="text-sm mb-1">
                     {{ $t('settings.thanksMsg') }}
                   </p>
+
+                  <div
+                    class="justify-center items-center flex flex-row w-full text-[rgb(var(--mdui-color-outline))] text-sm"
+                  >
+                    <img
+                      src="../../assets/archiveIcon.png"
+                      class="inline-block w-4 h-4.25 mr-2"
+                    />
+                    <div
+                      class="cursor-pointer"
+                      @click="
+                        openLink(
+                          'https://beian.mps.gov.cn/#/query/webSearch?code=33010202005351',
+                        )
+                      "
+                    >
+                      浙公网安备33010202005351号
+                    </div>
+
+                    <div
+                      class="cursor-pointer ml-4"
+                      @click="openLink('https://beian.miit.gov.cn/')"
+                    >
+                      浙ICP备2025209586号-1
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

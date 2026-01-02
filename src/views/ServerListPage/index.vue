@@ -717,7 +717,6 @@ const retrieveHipoleServers = () => {
 ::part(header) {
   font-family:
     Google Sans,
-    Harmony OS Sans SC,
     sans-serif;
 }
 

@@ -21,7 +21,9 @@
     "checkUpdFail": "检查更新失败",
     "listSeparator": "、",
     "clickToSet": "点击设置",
-    "unknownFail": "出错了！请按Ctrl+Shift+i，在顶部切换到“控制台”，然后截图并在GitHub仓库创建一个 Issue 或联系开发者QQ：3214442497 反映情况，感谢理解！"
+    "unknownFail": "出错了！请按Ctrl+Shift+i，在顶部切换到“控制台”，然后截图并在GitHub仓库创建一个 Issue 或联系开发者QQ：3214442497 反映情况，感谢理解！",
+    "getApp": "下载客户端",
+    "githubRepo": "GitHub 仓库"
   },
   "status": {
     "goodNews": "喜报",

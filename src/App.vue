@@ -9,7 +9,7 @@ import '@mdui/icons/close--rounded.js'
 import '@mdui/icons/announcement.js'
 import '@mdui/icons/download.js'
 import '@mdui/icons/coffee--rounded.js'
-import { onMounted, provide, ref, watch } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
 import { setTheme } from 'mdui'
@@ -139,15 +139,19 @@ const onHyperLinkClick = (e: Event) => {
             ><mdui-icon-coffee--rounded></mdui-icon-coffee--rounded>
           </mdui-button-icon>
         </mdui-tooltip>
-        <mdui-button-icon
-          class="mr-2"
-          :class="{ invert: isDark }"
-          @click="
-            openLink('https://github.com/HoraceHuang-ui/Competizione-Companion')
-          "
-        >
-          <img src="@/assets/github-mark.png" class="p-2 pt-1.5" />
-        </mdui-button-icon>
+        <mdui-tooltip :content="$t('general.githubRepo')">
+          <mdui-button-icon
+            class="mr-2"
+            :class="{ invert: isDark }"
+            @click="
+              openLink(
+                'https://github.com/HoraceHuang-ui/Competizione-Companion',
+              )
+            "
+          >
+            <img src="@/assets/github-mark.png" class="p-2 pt-1.5" />
+          </mdui-button-icon>
+        </mdui-tooltip>
         <mdui-button
           variant="tonal"
           @click="
@@ -157,7 +161,7 @@ const onHyperLinkClick = (e: Event) => {
           "
         >
           <mdui-icon-download slot="icon"></mdui-icon-download>
-          下载客户端
+          {{ $t('general.getApp') }}
         </mdui-button>
       </div>
     </mdui-top-app-bar>
@@ -370,7 +374,6 @@ h5,
 .title {
   font-family:
     Google Sans,
-    Harmony OS Sans SC,
     sans-serif;
 }
 a,
@@ -378,7 +381,6 @@ div,
 span {
   font-family:
     Google Sans Text,
-    Harmony OS Sans SC,
     sans-serif;
 }
 .marked {

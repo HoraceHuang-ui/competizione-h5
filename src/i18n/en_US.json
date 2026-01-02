@@ -21,7 +21,9 @@
     "checkUpdFail": "Failed to Check for Updates",
     "listSeparator": ", ",
     "clickToSet": "Click to Set",
-    "unknownFail": "An error occured! Please press Ctrl+Shift+i and switch to 'Console' tab at the top, take a screenshot and create an Issue in GitHub, thanks for your understanding!"
+    "unknownFail": "An error occured! Please press Ctrl+Shift+i and switch to 'Console' tab at the top, take a screenshot and create an Issue in GitHub, thanks for your understanding!",
+    "getApp": "Get App",
+    "githubRepo": "GitHub Repo"
   },
   "status": {
     "goodNews": "Good News",
