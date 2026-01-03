@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, ref, type Ref } from 'vue'
+import { type ComputedRef, inject, onMounted, ref } from 'vue'
 import '@mdui/icons/check-circle--rounded.js'
 import '@mdui/icons/error--rounded.js'
 import '@mdui/icons/refresh--rounded.js'
@@ -12,10 +12,7 @@ const loading = ref(false)
 const status = ref<any>({})
 const launching = ref(false)
 
-const { isDark } = inject('isDark') as {
-  isDark: Ref<boolean>
-  setDark: (val: boolean) => void
-}
+const isMobile = inject('isMobile') as ComputedRef<boolean>
 
 const launchGame = () => {
   launching.value = true
@@ -117,26 +114,29 @@ onMounted(() => {
       class="absolute bottom-2 left-0 right-0 text-center text-gray-400 text-sm flex flex-col items-center"
     >
       <mdui-button
+        v-if="!isMobile"
         @click="launchGame"
         :disabled="launching"
         :loading="launching"
         class="w-max mb-3 font-bold"
         >{{ $t('general.launchACC') }}</mdui-button
       >
-      <div class="items-center flex flex-row">
-        <img
-          src="../assets/archiveIcon.png"
-          class="inline-block w-4 h-4.25 mr-2"
-        />
-        <div
-          class="cursor-pointer"
-          @click="
-            openLink(
-              'https://beian.mps.gov.cn/#/query/webSearch?code=33010202005351',
-            )
-          "
-        >
-          浙公网安备33010202005351号
+      <div class="items-center flex flex-col-reverse md:flex-row">
+        <div class="flex flex-row items-center">
+          <img
+            src="../assets/archiveIcon.png"
+            class="inline-block w-4 h-4.25 mr-2"
+          />
+          <div
+            class="cursor-pointer"
+            @click="
+              openLink(
+                'https://beian.mps.gov.cn/#/query/webSearch?code=33010202005351',
+              )
+            "
+          >
+            浙公网安备33010202005351号
+          </div>
         </div>
 
         <div
