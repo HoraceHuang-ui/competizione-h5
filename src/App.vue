@@ -9,6 +9,8 @@ import '@mdui/icons/close--rounded.js'
 import '@mdui/icons/announcement.js'
 import '@mdui/icons/download.js'
 import '@mdui/icons/coffee--rounded.js'
+import '@mdui/icons/celebration--rounded.js'
+import '@mdui/icons/contact-support--rounded.js'
 import { onMounted, provide, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
@@ -27,6 +29,8 @@ setTheme(
 
 const donationOpen1 = ref(false)
 const donationOpen2 = ref(false)
+const friendshipOpen = ref(false)
+const contactOpen = ref(false)
 
 const mode = ref(0) // 0: Server Status
 const modes = [
@@ -134,6 +138,16 @@ const onHyperLinkClick = (e: Event) => {
         </div>
       </div>
       <div class="flex flex-row">
+        <mdui-tooltip :content="$t('general.contact')">
+          <mdui-button-icon @click="contactOpen = true"
+            ><mdui-icon-contact-support--rounded></mdui-icon-contact-support--rounded>
+          </mdui-button-icon>
+        </mdui-tooltip>
+        <mdui-tooltip :content="$t('general.friendshipLink')">
+          <mdui-button-icon @click="friendshipOpen = true"
+            ><mdui-icon-celebration--rounded></mdui-icon-celebration--rounded>
+          </mdui-button-icon>
+        </mdui-tooltip>
         <mdui-tooltip :content="$t('settings.donateButton')">
           <mdui-button-icon @click="donationOpen1 = true"
             ><mdui-icon-coffee--rounded></mdui-icon-coffee--rounded>
@@ -343,6 +357,66 @@ const onHyperLinkClick = (e: Event) => {
       @click="donationOpen2 = false"
       class="title font-bold"
       >{{ $t('settings.donation2Confirm') }}</mdui-button
+    >
+  </mdui-dialog>
+
+  <mdui-dialog
+    :headline="$t('general.friendshipLink')"
+    :open="friendshipOpen"
+    @close="friendshipOpen = false"
+    close-on-esc
+    close-on-overlay-click
+    :description="$t('general.friendshipLinkMsg')"
+  >
+    <ul class="mt-3 list-disc list-inside">
+      <li>
+        <a href="https://www.fullpush.cn" target="_blank">FULLPUSH</a>
+        - ACC 个人开服管理与数据统计工具
+      </li>
+      <li>
+        <a href="https://docs.qq.com/doc/DZUxEdEh0YXFUSkRW" target="_blank"
+          >ACC 新手指南</a
+        >
+        - 嗨跑群友们共同维护的 ACC 游戏新手常见 Q&A
+      </li>
+    </ul>
+    <mdui-button
+      slot="action"
+      class="font-bold"
+      @click="friendshipOpen = false"
+      variant="tonal"
+      >{{ $t('general.close') }}</mdui-button
+    >
+  </mdui-dialog>
+
+  <mdui-dialog
+    :headline="$t('general.contact')"
+    :open="contactOpen"
+    :description="$t('general.contactMsg')"
+    @close="contactOpen = false"
+    close-on-esc
+    close-on-overlay-click
+  >
+    <ul class="mt-3 list-disc list-inside select-text cursor-text">
+      <li>QQ: 3214442497</li>
+      <li>{{ $t('general.wechat') }}: HoraceHYY</li>
+      <li>
+        {{ $t('general.email') }}:
+        <a href="mailto:horacehuang17@gmail.com">horacehuang17@gmail.com</a>
+      </li>
+      <li>
+        {{ $t('general.hipoleId') }}: horacehuang17
+        <div class="opacity-70 mt-1">
+          {{ $t('general.hipoleIdMsg') }}
+        </div>
+      </li>
+    </ul>
+    <mdui-button
+      slot="action"
+      class="font-bold"
+      @click="contactOpen = false"
+      variant="tonal"
+      >{{ $t('general.close') }}</mdui-button
     >
   </mdui-dialog>
 </template>
