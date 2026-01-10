@@ -11,7 +11,7 @@ import '@mdui/icons/download.js'
 import '@mdui/icons/coffee--rounded.js'
 import '@mdui/icons/celebration--rounded.js'
 import '@mdui/icons/contact-support--rounded.js'
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
 import { setTheme } from 'mdui'
@@ -69,6 +69,9 @@ provide('isDark', {
   },
 })
 
+const isMobile = computed(() => window.matchMedia('(max-width: 768px').matches)
+provide('isMobile', isMobile)
+
 const launching = ref(false)
 const launchACC = () => {
   launching.value = true
@@ -119,6 +122,19 @@ const onHyperLinkClick = (e: Event) => {
 <template>
   <mdui-layout class="size-full overflow-hidden" @click="onHyperLinkClick">
     <mdui-top-app-bar
+      v-if="isMobile"
+      variant="small"
+      scroll-target="#mainRouterView"
+      class="flex flex-row justify-center items-center h-10"
+    >
+      <span
+        class="font-bold title mr-2"
+        style="color: rgb(var(--mdui-color-primary))"
+        >{{ $t(modes[mode] ?? '') }}</span
+      >
+    </mdui-top-app-bar>
+    <mdui-top-app-bar
+      v-else
       variant="small"
       scroll-target="#mainRouterView"
       class="pt-1 pl-3 pr-4 drag bg-transparent flex flex-row justify-between h-16 items-center"
@@ -181,6 +197,7 @@ const onHyperLinkClick = (e: Event) => {
     </mdui-top-app-bar>
 
     <mdui-navigation-rail
+      v-if="!isMobile"
       value="status"
       divider
       class="pb-4 bg-transparent w-16"
@@ -286,17 +303,34 @@ const onHyperLinkClick = (e: Event) => {
     </mdui-navigation-rail>
 
     <mdui-layout-main
-      class="overflow-hidden transition-all"
+      class="transition-all"
       :style="{
         background: `rgba(var(--mdui-color-surface), ${store.settings.general.bgOpacity || 0.85})`,
       }"
     >
-      <router-view id="mainRouterView" v-slot="{ Component }">
+      <router-view id="mainRouterView" v-slot="{ Component }" class="md:pr-4">
         <transition name="swipe-up" mode="out-in">
           <component :is="Component" />
         </transition>
       </router-view>
     </mdui-layout-main>
+
+    <mdui-navigation-bar v-if="isMobile" :value="mode">
+      <mdui-navigation-bar-item icon="place" :value="0" @click="nav(0)"
+        >{{ $t('general.statusShort') }}
+        <mdui-icon-cell-tower--rounded
+          slot="icon"
+        ></mdui-icon-cell-tower--rounded>
+      </mdui-navigation-bar-item>
+      <mdui-navigation-bar-item icon="place" :value="3" @click="nav(3)"
+        >{{ $t('general.bopShort') }}
+        <mdui-icon-balance--rounded slot="icon"></mdui-icon-balance--rounded>
+      </mdui-navigation-bar-item>
+      <mdui-navigation-bar-item icon="place" :value="6" @click="nav(6)"
+        >{{ $t('general.settings') }}
+        <mdui-icon-settings--rounded slot="icon"></mdui-icon-settings--rounded>
+      </mdui-navigation-bar-item>
+    </mdui-navigation-bar>
 
     <mdui-dialog :open="showBulletin">
       <div
@@ -489,9 +523,5 @@ span {
 
 .donation-pic {
   border-radius: var(--mdui-shape-corner-large);
-}
-
-#mainRouterView {
-  padding-right: 1rem;
 }
 </style>

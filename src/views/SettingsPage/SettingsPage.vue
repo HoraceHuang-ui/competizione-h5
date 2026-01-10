@@ -9,7 +9,7 @@ import '@mdui/icons/update--rounded.js'
 import '@mdui/icons/image--rounded.js'
 import '@mdui/icons/undo--rounded.js'
 import '@mdui/icons/help-outline--rounded.js'
-import { computed, inject, ref, type Ref, watch } from 'vue'
+import { computed, type ComputedRef, inject, ref, type Ref, watch } from 'vue'
 import { setColorScheme, setTheme } from 'mdui'
 import { darkModeSettings, themeMap, trackCarDispSettings } from '@/utils/enums'
 import { availableLangCodes, langMap, switchLang, translate } from '@/i18n'
@@ -25,6 +25,7 @@ const dark = inject('isDark') as {
   isDark: Ref<boolean>
   setDark: (val: boolean) => void
 }
+const isMobile = inject('isMobile') as ComputedRef<boolean>
 
 const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
 
@@ -34,15 +35,16 @@ if (!localStorage.lang) {
 const lang = ref(localStorage.lang || 'en_US')
 const dispMap = ['dispEnFull', 'dispEnShort', 'dispLocalShort']
 const dispItems = computed(() => {
-  if (lang.value === 'en_US') {
+  if (lang.value === 'en_US' || isMobile.value) {
     return [1, 2]
   } else {
     return [1, 2, 3]
   }
 })
 
-const darkModeChange = (event: Event) => {
-  const mode = event.target.value
+const themeModes = ['light', 'auto', 'dark']
+const darkModeChange = (event?: Event, item = 1) => {
+  const mode = event?.target?.value ?? item
   store.settings.general.darkMode = mode
   setTheme(themeMap[mode])
 
@@ -109,16 +111,25 @@ watch(
 <template>
   <div class="h-full flex flex-col justify-center items-center relative w-full">
     <mdui-card
-      variant="outlined"
-      class="size-full transition-all border border-[rgb(var(--mdui-color-inverse-primary-dark))] mx-4 mb-4 flex"
+      :variant="isMobile ? 'filled' : 'outlined'"
+      :class="
+        isMobile
+          ? 'size-full flex transition-all'
+          : 'size-full transition-all border border-[rgb(var(--mdui-color-inverse-primary-dark))] mx-4 mb-4 flex'
+      "
       :style="{
-        background: `rgb(var(--mdui-color-surface-container-lowest))`,
+        background: isMobile
+          ? `transparent`
+          : `rgb(var(--mdui-color-surface-container-lowest))`,
       }"
     >
-      <ScrollWrapper class="pl-2 pr-1">
-        <div class="pl-6 pt-6 pr-5">
+      <ScrollWrapper
+        class="pl-2 pr-1"
+        :show-bar="isMobile ? 'always' : 'hover'"
+      >
+        <div class="px-2 pt-6 text-sm">
+          <div class="title header">{{ $t('settings.general') }}</div>
           <div class="category">
-            <div class="title header">{{ $t('settings.general') }}</div>
             <div class="item">
               <div class="item-in">
                 <div>{{ $t('settings.language') }}</div>
@@ -129,14 +140,23 @@ watch(
                   :chip-label="item => langMap[item]"
                   :item-label="item => langMap[item]"
                   @select="onLangSelect"
-                >
-                </ChipSelect>
+                />
               </div>
             </div>
             <div class="item">
               <div class="item-in">
                 <div>{{ $t('settings.darkMode') }}</div>
+                <ChipSelect
+                  v-if="isMobile"
+                  v-model="store.settings.general.darkMode"
+                  :items="[1, 2, 3]"
+                  chip-class="rounded-full"
+                  :chip-label="item => $t(`settings.${themeModes[item - 1]}`)"
+                  :item-label="item => $t(`settings.${themeModes[item - 1]}`)"
+                  @select="item => darkModeChange(undefined, item)"
+                />
                 <mdui-segmented-button-group
+                  v-else
                   class="rounded-full"
                   selects="single"
                   :value="store.settings.general.darkMode"
@@ -189,16 +209,20 @@ watch(
                 </div>
               </div>
             </div>
-            <mdui-button
-              class="ml-6"
-              variant="text"
-              @click="resetDialogOpen = true"
-              >{{ $t('settings.reset') }}</mdui-button
+            <div
+              class="flex flex-row justify-center md:justify-start md:ml-6 w-full"
             >
+              <mdui-button
+                variant="text"
+                @click="resetDialogOpen = true"
+                :class="{ 'mb-2': isMobile }"
+                >{{ $t('settings.reset') }}</mdui-button
+              >
+            </div>
           </div>
+          <div class="title header">{{ $t('general.status') }}</div>
           <div class="category">
-            <div class="title header">{{ $t('general.status') }}</div>
-            <div class="item">
+            <div class="item" style="padding-right: 0.5rem">
               <div class="item-in">
                 <div>{{ $t('settings.serverDownMsg') }}</div>
                 <mdui-text-field
@@ -213,8 +237,8 @@ watch(
               </div>
             </div>
           </div>
+          <div class="title header">{{ $t('general.setup') }}</div>
           <div class="category">
-            <div class="title header">{{ $t('general.setup') }}</div>
             <div class="item">
               <div class="item-in">
                 <div>{{ $t('settings.carDisp') }}</div>
@@ -255,7 +279,7 @@ watch(
                 </mdui-button>
               </div>
             </div>
-            <div class="item" v-if="lang !== 'en_US'">
+            <div class="item" v-if="lang !== 'en_US' && !isMobile">
               <div class="item-in">
                 <div>{{ $t('settings.paramsEn') }}</div>
                 <mdui-switch
@@ -267,12 +291,12 @@ watch(
               </div>
             </div>
           </div>
-          <div class="category">
-            <div class="title header">{{ $t('settings.about') }}</div>
+          <div class="title header">{{ $t('settings.about') }}</div>
+          <div class="category" style="margin-bottom: 1rem">
             <div class="item">
               <div class="item-in">
                 <div class="flex flex-row items-center">
-                  <div>{{ $t('settings.version') }}</div>
+                  <div>{{ $t('general.githubRepo') }}</div>
                 </div>
                 <div class="flex flex-row justify-end items-center">
                   <mdui-button-icon
@@ -291,7 +315,7 @@ watch(
             </div>
             <div class="larger mt-4">
               <div
-                class="w-full text-center text-[rgb(var(--mdui-color-outline))] flex flex-row justify-center items-center"
+                class="w-full text-center text-[rgb(var(--mdui-color-outline))] flex flex-row flex-wrap gap-3 justify-center items-center"
               >
                 <mdui-tooltip placement="top" class="credits">
                   <div slot="content">Dynamic Esports Academy</div>
@@ -391,7 +415,7 @@ watch(
               <mdui-divider class="my-4 opacity-60"></mdui-divider>
               <div class="item-in">
                 <div
-                  class="w-full text-center text-[rgb(var(--mdui-color-outline))]"
+                  class="w-full text-center text-[rgb(var(--mdui-color-outline))] pb-2"
                 >
                   <p class="title">Made with ❤️ by horacehuang17</p>
                   <p class="text-sm mb-1">
@@ -400,6 +424,7 @@ watch(
 
                   <div
                     class="justify-center items-center flex flex-row w-full text-[rgb(var(--mdui-color-outline))] text-sm"
+                    v-if="!isMobile"
                   >
                     <img
                       src="../../assets/archiveIcon.png"
@@ -425,6 +450,35 @@ watch(
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div
+            class="mb-4 justify-center items-center flex flex-col w-full text-[rgb(var(--mdui-color-outline))] text-sm"
+            v-if="isMobile"
+          >
+            <div class="flex flex-row">
+              <img
+                src="../../assets/archiveIcon.png"
+                class="inline-block w-4 h-4.25 mr-2"
+              />
+              <div
+                class="cursor-pointer"
+                @click="
+                  openLink(
+                    'https://beian.mps.gov.cn/#/query/webSearch?code=33010202005351',
+                  )
+                "
+              >
+                浙公网安备33010202005351号
+              </div>
+            </div>
+
+            <div
+              class="cursor-pointer ml-4"
+              @click="openLink('https://beian.miit.gov.cn/')"
+            >
+              浙ICP备2025209586号-1
             </div>
           </div>
         </div>
@@ -459,17 +513,17 @@ watch(
   border-radius: 999px;
   background: rgb(var(--mdui-color-on-secondary));
 }
+.header {
+  font-size: 1.875rem;
+  line-height: 1.2;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+}
 
 .category {
   width: 100%;
   margin-bottom: 1rem;
-
-  .header {
-    font-size: 1.875rem;
-    line-height: 1.2;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
 
   .item {
     height: 60px;
@@ -502,6 +556,54 @@ watch(
 
     &.larger {
       align-items: baseline;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .category {
+    width: 100%;
+    margin-bottom: 2rem;
+    background-color: rgb(var(--mdui-color-surface-container-lowest));
+    border-radius: 30px;
+
+    .item {
+      height: 60px;
+      cursor: default;
+      padding: 0 1rem;
+      margin: 0.125rem 0;
+      justify-content: space-between;
+      border-radius: 30px;
+      transition: all var(--mdui-motion-duration-short4)
+        var(--mdui-motion-easing-standard);
+
+      &.larger {
+        height: max-content;
+        min-height: 60px;
+        padding: 0.75rem 1rem;
+      }
+
+      &:hover {
+        background: transparent;
+      }
+    }
+
+    .item-in {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      &.larger {
+        align-items: baseline;
+      }
     }
   }
 }

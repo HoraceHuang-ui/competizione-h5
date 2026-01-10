@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { inject, onMounted, ref, watch } from 'vue'
+import { type ComputedRef, inject, onMounted, ref, watch } from 'vue'
 import ScrollWrapper from '@/components/ScrollWrapper.vue'
-import { darkModeSettings, trackIndex } from '@/utils/enums'
+import { trackIndex } from '@/utils/enums'
 import {
   getCarById,
   getCarDisplayById,
@@ -14,6 +14,7 @@ import carData from '@/utils/carData.ts'
 import '@mdui/icons/save--rounded.js'
 // import PresetDialog from '@/views/BopPage/components/PresetDialog.vue'
 import TrackSelector from '@/components/TrackSelector.vue'
+import ChipSelect from '@/components/ChipSelect.vue'
 
 const store = useStore()
 
@@ -28,6 +29,9 @@ const curSeries = ref('GT3')
 const loading = ref(true)
 const error = ref(false)
 // const saveDialogShow = ref(false)
+
+const isMobile = inject('isMobile') as ComputedRef<boolean>
+const series = ['GT3', 'GT4']
 
 const defaultGT3 = {
   value: 'amr_v8_vantage_gt3',
@@ -84,14 +88,18 @@ onMounted(() => {
 <template>
   <div class="h-full flex flex-col justify-center items-center relative w-full">
     <mdui-card
-      variant="outlined"
-      class="size-full border border-[rgb(var(--mdui-color-inverse-primary-dark))] mx-4 mb-4 flex flex-col"
+      :variant="isMobile ? 'filled' : 'outlined'"
+      :class="
+        isMobile
+          ? 'size-full flex flex-col'
+          : 'size-full border border-[rgb(var(--mdui-color-inverse-primary-dark))] mx-4 mb-4 flex flex-col'
+      "
       :style="{
         background: `rgba(var(--mdui-color-surface-container-lowest), ${(0.65 * (store.settings.general.bgOpacity || 0.85)) / 0.85})`,
       }"
     >
-      <div class="flex flex-row justify-between items-center mx-6 mt-4 mb-4">
-        <div class="flex flex-row items-center">
+      <div class="flex flex-row justify-between items-baseline mx-6 mt-4 mb-4">
+        <div class="flex flex-row flex-wrap items-center">
           <TrackSelector
             v-if="curCategoryMethod === 'byTrack'"
             v-model="curTrack"
@@ -130,7 +138,14 @@ onMounted(() => {
           <!--            </mdui-button-icon>-->
           <!--          </mdui-tooltip>-->
 
+          <ChipSelect
+            v-if="isMobile"
+            v-model="curSeries"
+            :items="series"
+            chip-class="border border-[rgb(var(--mdui-color-outline-variant))] mr-2"
+          />
           <mdui-segmented-button-group
+            v-else
             :value="curSeries"
             class="rounded-full"
             selects="single"
@@ -154,16 +169,18 @@ onMounted(() => {
       <div
         class="flex flex-row justify-between mx-10 mt-2 title text-lg font-bold text-[rgb(var(--mdui-color-primary))]"
       >
-        <div class="w-[50%]">
+        <div class="w-[30%] md:w-[50%]">
           {{
             curCategoryMethod === 'byTrack' ? $t('bop.car') : $t('bop.track')
           }}
         </div>
-        <div class="w-[20%]">
+        <div class="w-[20%]" v-if="!isMobile">
           {{ curCategoryMethod === 'byTrack' ? $t('bop.year') : '' }}
         </div>
-        <div class="w-[15%]">{{ $t('bop.restrictor') }}</div>
-        <div class="w-[10%] text-right">{{ $t('bop.ballast') }}</div>
+        <div class="w-[25%]" :class="{ 'text-right': isMobile }">
+          {{ $t('bop.restrictor') }}
+        </div>
+        <div class="w-[20%] md:w-[10%] text-right">{{ $t('bop.ballast') }}</div>
       </div>
       <mdui-divider class="mt-4 mx-6"></mdui-divider>
 
@@ -181,7 +198,10 @@ onMounted(() => {
         </div>
       </Transition>
       <Transition name="fade-up">
-        <ScrollWrapper v-if="!loading && bopData && !error">
+        <ScrollWrapper
+          v-if="!loading && bopData && !error"
+          :show-bar="isMobile ? 'always' : 'hover'"
+        >
           <div class="pb-6" v-if="curCategoryMethod === 'byTrack'">
             <div
               class="flex flex-row justify-between mx-4 my-2 px-6 py-3 rounded-full"
@@ -214,7 +234,7 @@ onMounted(() => {
                     : 'none',
               }"
             >
-              <div class="w-[50%] flex flex-row items-center">
+              <div class="w-[60%] md:w-[50%] flex flex-row items-center">
                 <img
                   :src="`/carLogos/${getCarById(bop.car_model)?.[1]?.manufacturer}.png`"
                   class="w-6 h-6 mr-3"
@@ -225,9 +245,11 @@ onMounted(() => {
                   }}
                 </div>
               </div>
-              <div class="w-[20%]">{{ bop.car_year }}</div>
+              <div v-if="!isMobile" class="w-[20%]">
+                {{ bop.car_year }}
+              </div>
               <div
-                class="w-[15%]"
+                class="w-[10%] md:w-[15%]"
                 :class="{
                   'text-orange-300': bop.restrictor > 0 && isDark,
                   'text-orange-500': bop.restrictor > 0 && !isDark,
@@ -236,7 +258,7 @@ onMounted(() => {
                 {{ bop.restrictor ? `${bop.restrictor}%` : '-' }}
               </div>
               <div
-                class="w-[10%] text-right"
+                class="w-[20%] md:w-[10%] text-right"
                 :class="{
                   'text-red-400': bop.ballast > 0 && isDark,
                   'text-red-500': bop.ballast > 0 && !isDark,
