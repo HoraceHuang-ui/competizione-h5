@@ -145,12 +145,12 @@ watch(
     <img
       class="w-screen h-screen absolute object-cover"
       v-if="store.settings.general.bgOpacity < 1 && !isMobile"
-      :src="asseconHimeUrls[isDark ? 'dark_pc' : 'light_pc']"
+      :src="`/asseconHime/ASSECON_HIME_${isDark ? 'dark' : 'light'}.png`"
     />
     <img
       class="w-screen h-screen absolute object-cover object-top"
       v-else-if="store.settings.general.bgOpacity < 1 && isMobile"
-      :src="asseconHimeUrls[isDark ? 'dark_mobile' : 'light_mobile']"
+      :src="`/asseconHime/ASSECON_HIME_${isDark ? 'dark_mobile' : 'light_mobile'}.png`"
     />
   </Transition>
   <mdui-layout class="size-full overflow-hidden" @click="onHyperLinkClick">

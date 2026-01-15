@@ -61,12 +61,3 @@ export const asseconHimeThemeColor = {
   light: '#98d5fe',
   dark: '#87637c',
 }
-
-export const asseconHimeUrls = {
-  light_pc: 'http://youke.xn--y7xa690gmna.cn/s1/2026/01/16/696924b6370af.png',
-  dark_pc: 'http://youke.xn--y7xa690gmna.cn/s1/2026/01/16/696924b6a9339.png',
-  light_mobile:
-    'http://youke.xn--y7xa690gmna.cn/s1/2026/01/16/696924b63cf6c.png',
-  dark_mobile:
-    'http://youke.xn--y7xa690gmna.cn/s1/2026/01/16/696924b65f565.png',
-}
