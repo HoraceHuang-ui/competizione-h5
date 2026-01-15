@@ -11,11 +11,16 @@ import '@mdui/icons/download.js'
 import '@mdui/icons/coffee--rounded.js'
 import '@mdui/icons/celebration--rounded.js'
 import '@mdui/icons/contact-support--rounded.js'
-import { onMounted, provide, ref, computed } from 'vue'
+import { onMounted, provide, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
-import { setTheme } from 'mdui'
-import { darkModeSettings, themeMap } from '@/utils/enums'
+import { setColorScheme, setTheme } from 'mdui'
+import {
+  asseconHimeThemeColor,
+  asseconHimeUrls,
+  darkModeSettings,
+  themeMap,
+} from '@/utils/enums'
 import { translate } from '@/i18n'
 import { marked } from 'marked'
 import { launchSteam, openLink } from '@/utils/utils'
@@ -86,7 +91,7 @@ const bulletin = ref(undefined)
 const queryBulletin = async () => {
   showBulletin.value = false
   // const res = await axios.get('http://0.0.0.0:5005/bulletin')
-  const res = await axios.get('http://120.55.52.240:5005/bulletin')
+  const res = await axios.get('https://api.hh17.top/competizione/bulletin')
   if (res.data.success && res.data.msgInfo.id > store.general.msgId) {
     bulletin.value = res.data.msgInfo
     showBulletin.value = true
@@ -118,14 +123,42 @@ const onHyperLinkClick = (e: Event) => {
     }
   }
 }
+
+watch(
+  isDark,
+  newVal => {
+    if (store.settings.general.bgOpacity < 1) {
+      const newScheme = newVal
+        ? asseconHimeThemeColor.dark
+        : asseconHimeThemeColor.light
+      store.settings.general.themeColor = newScheme
+      setColorScheme(newScheme)
+    }
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 <template>
+  <Transition name="fade">
+    <img
+      class="w-screen h-screen absolute object-cover"
+      v-if="store.settings.general.bgOpacity < 1 && !isMobile"
+      :src="asseconHimeUrls[isDark ? 'dark_pc' : 'light_pc']"
+    />
+    <img
+      class="w-screen h-screen absolute object-cover object-top"
+      v-else-if="store.settings.general.bgOpacity < 1 && isMobile"
+      :src="asseconHimeUrls[isDark ? 'dark_mobile' : 'light_mobile']"
+    />
+  </Transition>
   <mdui-layout class="size-full overflow-hidden" @click="onHyperLinkClick">
     <mdui-top-app-bar
       v-if="isMobile"
       variant="small"
       scroll-target="#mainRouterView"
-      class="flex flex-row justify-center items-center h-10"
+      class="flex flex-row justify-center items-center h-10 bg-transparent"
     >
       <span
         class="font-bold title mr-2"
@@ -315,7 +348,7 @@ const onHyperLinkClick = (e: Event) => {
       </router-view>
     </mdui-layout-main>
 
-    <mdui-navigation-bar v-if="isMobile" :value="mode">
+    <mdui-navigation-bar v-if="isMobile" :value="mode" class="bg-transparent">
       <mdui-navigation-bar-item icon="place" :value="0" @click="nav(0)"
         >{{ $t('general.statusShort') }}
         <mdui-icon-cell-tower--rounded

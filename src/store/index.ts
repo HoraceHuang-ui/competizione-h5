@@ -20,6 +20,7 @@ export const useStore = defineStore('userStore', {
         lang: 'zh_CN',
         darkMode: 2,
         themeColor: '#785abf',
+        customBgThemeColor: '#785abf',
         bgOpacity: 0.85,
       },
       status: {

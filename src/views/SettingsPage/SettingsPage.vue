@@ -120,7 +120,7 @@ watch(
       :style="{
         background: isMobile
           ? `transparent`
-          : `rgb(var(--mdui-color-surface-container-lowest))`,
+          : `rgba(var(--mdui-color-surface-container-lowest), ${(0.65 * (store.settings.general.bgOpacity || 0.85)) / 0.85})`,
       }"
     >
       <ScrollWrapper
@@ -187,6 +187,40 @@ watch(
               <div class="item-in">
                 <div>{{ $t('settings.colorScheme') }}</div>
                 <div class="flex flex-row items-center">
+                  <mdui-tooltip
+                    placement="bottom"
+                    variant="rich"
+                    :headline="$t('settings.bgOpacity')"
+                  >
+                    <div slot="content" class="w-[300px]">
+                      <mdui-slider
+                        class="px-4"
+                        :value="store.settings.general.bgOpacity || 0.85"
+                        :min="0.5"
+                        :step="0.05"
+                        :max="1"
+                        @input="
+                          store.settings.general.bgOpacity = $event.target.value
+                        "
+                        nolabel
+                      ></mdui-slider>
+                    </div>
+                    <div
+                      class="mr-2 px-4 py-2.5 rounded-full h-10"
+                      style="
+                        background: rgba(
+                          var(--mdui-color-inverse-on-surface),
+                          0.6
+                        );
+                      "
+                    >
+                      {{
+                        (
+                          (store.settings.general.bgOpacity || 0.85) * 100
+                        ).toFixed(0)
+                      }}%
+                    </div>
+                  </mdui-tooltip>
                   <mdui-tooltip placement="bottom-end" class="picker">
                     <ChromePicker
                       slot="content"
@@ -570,7 +604,7 @@ watch(
   .category {
     width: 100%;
     margin-bottom: 2rem;
-    background-color: rgb(var(--mdui-color-surface-container-lowest));
+    background-color: rgba(var(--mdui-color-surface-container-lowest), 0.45);
     border-radius: 30px;
 
     .item {
