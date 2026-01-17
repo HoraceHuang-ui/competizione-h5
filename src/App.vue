@@ -91,7 +91,7 @@ const bulletin = ref(undefined)
 const queryBulletin = async () => {
   showBulletin.value = false
   // const res = await axios.get('http://0.0.0.0:5005/bulletin')
-  const res = await axios.get('/api/competizione/bulletin')
+  const res = await axios.get('https://api.hh17.top/competizione/bulletin')
   if (res.data.success && res.data.msgInfo.id > store.general.msgId) {
     bulletin.value = res.data.msgInfo
     showBulletin.value = true
