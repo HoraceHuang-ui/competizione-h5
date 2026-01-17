@@ -91,7 +91,7 @@ const bulletin = ref(undefined)
 const queryBulletin = async () => {
   showBulletin.value = false
   // const res = await axios.get('http://0.0.0.0:5005/bulletin')
-  const res = await axios.get('https://api.hh17.top/competizione/bulletin')
+  const res = await axios.get('/api/competizione/bulletin')
   if (res.data.success && res.data.msgInfo.id > store.general.msgId) {
     bulletin.value = res.data.msgInfo
     showBulletin.value = true
@@ -370,7 +370,7 @@ watch(
         slot="header"
         class="flex flex-row justify-between items-center text-2xl"
       >
-        <div>{{ bulletin?.title?.[store.settings.general.lang] }}</div>
+        <div>{{ bulletin?.title?.[$t('langCode')] }}</div>
         <mdui-button-icon @click="showBulletin = false">
           <mdui-icon-close--rounded></mdui-icon-close--rounded>
         </mdui-button-icon>
@@ -378,9 +378,7 @@ watch(
       <div
         class="overflow-y-scroll max-h-[500px] w-[400px] scroll-wrapper-app-vue"
       >
-        <div
-          v-html="marked(bulletin?.detail?.[store.settings.general.lang] || '')"
-        />
+        <div v-html="marked(bulletin?.detail?.[$t('langCode')] || '')" />
       </div>
     </mdui-dialog>
   </mdui-layout>

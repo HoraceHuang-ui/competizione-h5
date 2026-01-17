@@ -2,21 +2,16 @@
 import '@mdui/icons/file-upload--rounded.js'
 import '@mdui/icons/insert-drive-file--rounded.js'
 
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { snackbar } from 'mdui'
 import carData from '@/utils/carData.ts'
 import SetupDisplay from '@/views/SetupMgmtPage/components/SetupDisplay.vue'
-import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import '@mdui/icons/arrow-drop-down--rounded.js'
 import '@mdui/icons/check--rounded.js'
-import ChipSelect from '@/components/ChipSelect.vue'
 import { useStore } from '@/store'
-import { seriesColorMap } from '@/utils/enums'
 import { translate } from '@/i18n'
 import SetupCode from '@/views/SetupMgmtPage/components/SetupCode.vue'
-import CarSelector from '@/components/CarSelector.vue'
-import TrackSelector from '@/components/TrackSelector.vue'
-import { getCarByKey } from '@/utils/utils'
+import { getCarSeriesByKey } from '@/utils/utils'
 
 const store = useStore()
 
@@ -32,11 +27,22 @@ const counterSide = (side: Side) => {
 }
 
 const groups = ['GT3', 'GT4', 'GTC', 'TCX']
-const curGroup = ref('GT3')
-const setupList = ref({
-  left: [],
-  right: [],
-})
+
+const files = ref(
+  sessionStorage.setupFiles
+    ? JSON.parse(sessionStorage.setupFiles)
+    : {
+        left: undefined,
+        right: undefined,
+      },
+)
+const curGroup = ref(
+  files.value.left || files.value.right
+    ? getCarSeriesByKey((files.value.left || files.value.right).carName) ||
+        'GT3'
+    : 'GT3',
+)
+
 const fileSearch = ref(
   sessionStorage.setupFileNames
     ? JSON.parse(sessionStorage.setupFileNames)
@@ -50,18 +56,6 @@ const curCar = ref({
   left: undefined,
   right: undefined,
 })
-const curTrack = ref({
-  left: undefined,
-  right: undefined,
-})
-const files = ref(
-  sessionStorage.setupFiles
-    ? JSON.parse(sessionStorage.setupFiles)
-    : {
-        left: undefined,
-        right: undefined,
-      },
-)
 
 watch(
   files,
@@ -195,17 +189,6 @@ const handleDrop = async (side: 'left' | 'right', event: DragEvent) => {
 const closeFileSaveDialog = () => {
   fileImportOpen.value = undefined
   curSaveTrack.value = undefined
-}
-
-const saveSetup = async () => {
-  console.log(files.value[fileImportOpen.value]?.carName)
-  await window.fs.setupFile(
-    files.value[fileImportOpen.value]?.carName,
-    curSaveTrack.value?.value,
-    fileSearch.value[fileImportOpen.value],
-    JSON.stringify(files.value[fileImportOpen.value]),
-  )
-  closeFileSaveDialog()
 }
 
 const handleDragEnter = (side: 'left' | 'right') => {
