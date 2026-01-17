@@ -110,7 +110,7 @@
     "codePlaceholder": "Paste the setup code here",
     "fileName": "File: ",
     "carFromCode": "Car: ",
-    "saveAndView": "Save and View",
+    "exportAndView": "Export and View",
     "viewOnly": "View Only",
     "codeCopySuccess": "Setup code copied to clipboard",
     "codeCopyMsg": "Open the 「Competizione Companion」 app, turn to Setup Management page and paste this message to load and save the setup in one click.",

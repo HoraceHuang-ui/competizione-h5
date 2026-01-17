@@ -431,7 +431,7 @@ const findCar = (carName: string) => {
             <div class="text-right">
               <mdui-chip
                 v-if="items[0] === 'tyreCompound'"
-                style="font-family: Consolas, sans-serif"
+                style="font-family: Consolas, 'Monaco', sans-serif"
                 :class="
                   props.compareSetup
                     ? {
@@ -455,7 +455,7 @@ const findCar = (carName: string) => {
               </mdui-chip>
               <mdui-chip
                 v-else-if="items.length < 5"
-                style="font-family: Consolas, sans-serif"
+                style="font-family: Consolas, 'Monaco', sans-serif"
                 :class="
                   props.compareSetup
                     ? {
@@ -500,9 +500,7 @@ const findCar = (carName: string) => {
                   </div>
                   <mdui-chip
                     class="ml-2 my-0.5"
-                    style="
-                      font-family: Consolas, sans-serif;
-                    "
+                    style="font-family: Consolas, 'Monaco', sans-serif"
                     :class="
                       props.compareSetup
                         ? {

@@ -4,7 +4,6 @@ import '@mdui/icons/check--rounded.js'
 import { snackbar } from 'mdui'
 import { translate } from '@/i18n'
 import { brotliCompress, brotliDecompress, getCarByKey } from '@/utils/utils'
-import TrackSelector from '@/components/TrackSelector.vue'
 
 const props = defineProps({
   extractedSetup: {
@@ -52,7 +51,6 @@ const copyCode = async () => {
   }
 }
 
-const track = ref(undefined)
 const code = ref('')
 const car = ref('')
 const setupParts = ref<String[]>([])
@@ -67,7 +65,7 @@ const parseCode = async () => {
 }
 watch(code, parseCode)
 
-const viewSetup = () => {
+const viewSetup = (shouldExport: boolean) => {
   const s = setupParts.value.map(x => parseInt(x))
   const res = {
     carName: car.value,
@@ -145,6 +143,14 @@ const viewSetup = () => {
     trackBopType: s[95],
   }
 
+  if (shouldExport) {
+    var aLink = document.createElement('a')
+    var blob = new Blob([JSON.stringify(res, null, 2)])
+    aLink.download = `${name.value}.json`
+    aLink.href = URL.createObjectURL(blob)
+    aLink.click()
+  }
+
   emits('importSetup', res, name.value)
   closeDialog()
 }
@@ -152,7 +158,6 @@ const viewSetup = () => {
 const closeDialog = () => {
   name.value = ''
   code.value = ''
-  track.value = undefined
   emits('closeDialog')
 }
 </script>
@@ -203,14 +208,19 @@ const closeDialog = () => {
       <div class="mt-2 opacity-80">
         {{ $t('setup.carFromCode') + (getCarByKey(car)?.name || '') }}
       </div>
-      <TrackSelector
-        v-model="track"
-        dropdown-placement="right"
-        chip-class="mt-2 w-max"
-      />
-      <mdui-button class="mt-2" :disabled="!code || !name" @click="viewSetup">{{
-        $t('setup.viewOnly')
-      }}</mdui-button>
+      <mdui-button
+        class="mt-2"
+        :disabled="!code || !name"
+        @click="viewSetup(true)"
+        >{{ $t('setup.exportAndView') }}</mdui-button
+      >
+      <mdui-button
+        class="mt-2"
+        :disabled="!code || !name"
+        @click="viewSetup(false)"
+        variant="tonal"
+        >{{ $t('setup.viewOnly') }}</mdui-button
+      >
       <mdui-button variant="text" class="mt-2" @click="closeDialog">{{
         $t('general.cancel')
       }}</mdui-button>
