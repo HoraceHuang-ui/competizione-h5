@@ -158,7 +158,7 @@ watch([curTrack, curSeries], () => {
         </div>
         <div class="flex flex-row items-center">
           <div
-            v-if="curCategoryMethod === 'byTrack'"
+            v-if="curCategoryMethod === 'byTrack' && !isMobile"
             class="flex flex-row items-center"
           >
             <div>{{ $t('bop.trackTargetLap') }}</div>
@@ -390,7 +390,7 @@ watch([curTrack, curSeries], () => {
                   `${store.general.favTracks.includes(getTrack(track.name, trackIndex.LFM)?.[trackIndex.ID]) ? `★ ` : ''}${getTrackDisplay(track.name, trackIndex.LFM)}`
                 }}
               </div>
-              <div class="w-[30%]"></div>
+              <div class="w-[10%] md:w-[30%]"></div>
               <div
                 class="w-[10%]"
                 :class="{
@@ -401,7 +401,7 @@ watch([curTrack, curSeries], () => {
                 {{ track.restrictor ? `${track.restrictor}%` : '-' }}
               </div>
               <div
-                class="w-[10%] text-right"
+                class="w-[20%] md:w-[10%] text-right"
                 :class="{
                   'text-red-400': track.ballast > 0 && isDark,
                   'text-red-500': track.ballast > 0 && !isDark,
