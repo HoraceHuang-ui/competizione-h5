@@ -606,6 +606,8 @@ watch(
     margin-bottom: 2rem;
     background-color: rgba(var(--mdui-color-surface-container-lowest), 0.45);
     border-radius: 30px;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 
     .item {
       height: 60px;
