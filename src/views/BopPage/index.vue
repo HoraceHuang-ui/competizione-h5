@@ -127,7 +127,7 @@ const savePre = () => {
 const saveJson = () => {
   var aLink = document.createElement('a')
   var blob = new Blob([JSON.stringify(formatBopData(bopData.value), null, 2)])
-  aLink.download = `bop_${curSeries.value}.json`
+  aLink.download = `bop.json`
   aLink.href = URL.createObjectURL(blob)
   aLink.click()
 }
