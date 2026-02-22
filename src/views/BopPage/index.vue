@@ -9,6 +9,7 @@ import {
   getTrack,
   getTrackDisplay,
   json2Preset,
+  saveFile,
 } from '@/utils/utils'
 import { useStore } from '@/store'
 import CarSelector from '@/components/CarSelector.vue'
@@ -117,19 +118,11 @@ const savePre = () => {
   preset.BOP = formatBopData(bopData.value)
   let content = json2Preset(preset)
 
-  var aLink = document.createElement('a')
-  var blob = new Blob([content])
-  aLink.download = 'preset.pre'
-  aLink.href = URL.createObjectURL(blob)
-  aLink.click()
+  saveFile(content, 'preset.pre')
 }
 
 const saveJson = () => {
-  var aLink = document.createElement('a')
-  var blob = new Blob([JSON.stringify(formatBopData(bopData.value), null, 2)])
-  aLink.download = `bop.json`
-  aLink.href = URL.createObjectURL(blob)
-  aLink.click()
+  saveFile(JSON.stringify(formatBopData(bopData.value), null, 2), 'bop.json')
 }
 
 onMounted(() => {

@@ -209,3 +209,12 @@ export const brotliDecompress = async (input: string) => {
 export const openLink = (url: string) => {
   window.open(url, '_blank')
 }
+
+export const saveFile = (content: string, filename: string) => {
+  const aLink = document.createElement('a')
+  const blob = new Blob([content])
+  aLink.download = filename
+  aLink.href = URL.createObjectURL(blob)
+  aLink.click()
+  document.removeChild(aLink)
+}

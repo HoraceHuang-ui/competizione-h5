@@ -3,7 +3,12 @@ import { ref, watch } from 'vue'
 import '@mdui/icons/check--rounded.js'
 import { snackbar } from 'mdui'
 import { translate } from '@/i18n'
-import { brotliCompress, brotliDecompress, getCarByKey } from '@/utils/utils'
+import {
+  brotliCompress,
+  brotliDecompress,
+  getCarByKey,
+  saveFile,
+} from '@/utils/utils'
 
 const props = defineProps({
   extractedSetup: {
@@ -144,11 +149,7 @@ const viewSetup = (shouldExport: boolean) => {
   }
 
   if (shouldExport) {
-    var aLink = document.createElement('a')
-    var blob = new Blob([JSON.stringify(res, null, 2)])
-    aLink.download = `${name.value}.json`
-    aLink.href = URL.createObjectURL(blob)
-    aLink.click()
+    saveFile(JSON.stringify(res, null, 2), `${name.value}.json`)
   }
 
   emits('importSetup', res, name.value)
