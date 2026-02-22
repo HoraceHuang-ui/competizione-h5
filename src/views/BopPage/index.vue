@@ -3,10 +3,12 @@ import { type ComputedRef, inject, onMounted, ref, watch } from 'vue'
 import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import { trackIndex } from '@/utils/enums'
 import {
+  formatBopData,
   getCarById,
   getCarDisplayById,
   getTrack,
   getTrackDisplay,
+  json2Preset,
 } from '@/utils/utils'
 import { useStore } from '@/store'
 import CarSelector from '@/components/CarSelector.vue'
@@ -15,6 +17,7 @@ import '@mdui/icons/save--rounded.js'
 // import PresetDialog from '@/views/BopPage/components/PresetDialog.vue'
 import TrackSelector from '@/components/TrackSelector.vue'
 import ChipSelect from '@/components/ChipSelect.vue'
+import presetTemplate from './components/presetTemplate'
 
 const store = useStore()
 
@@ -109,6 +112,26 @@ const queryData = () => {
     })
 }
 
+const savePre = () => {
+  let preset: Record<string, any> = presetTemplate
+  preset.BOP = formatBopData(bopData.value)
+  let content = json2Preset(preset)
+
+  var aLink = document.createElement('a')
+  var blob = new Blob([content])
+  aLink.download = 'preset.pre'
+  aLink.href = URL.createObjectURL(blob)
+  aLink.click()
+}
+
+const saveJson = () => {
+  var aLink = document.createElement('a')
+  var blob = new Blob([JSON.stringify(formatBopData(bopData.value), null, 2)])
+  aLink.download = `bop_${curSeries.value}.json`
+  aLink.href = URL.createObjectURL(blob)
+  aLink.click()
+}
+
 onMounted(() => {
   queryData()
 })
@@ -182,19 +205,19 @@ watch([curTrack, curSeries], () => {
           <div v-else class="flex flex-row items-center">
             <div>&nbsp;</div>
           </div>
-          <!--          <mdui-tooltip-->
-          <!--            :content="$t('bop.saveToGUI')"-->
-          <!--            placement="bottom"-->
-          <!--            :disabled="loading"-->
-          <!--          >-->
-          <!--            <mdui-button-icon-->
-          <!--              class="mr-2"-->
-          <!--              :disabled="loading"-->
-          <!--              @click="saveDialogShow = true"-->
-          <!--            >-->
-          <!--              <mdui-icon-save&#45;&#45;rounded></mdui-icon-save&#45;&#45;rounded>-->
-          <!--            </mdui-button-icon>-->
-          <!--          </mdui-tooltip>-->
+          <mdui-dropdown trigger="hover">
+            <mdui-button-icon class="mr-2" slot="trigger" :disabled="loading">
+              <mdui-icon-save--rounded></mdui-icon-save--rounded>
+            </mdui-button-icon>
+            <mdui-menu>
+              <mdui-menu-item @click="saveJson">{{
+                $t('bop.saveAsJson')
+              }}</mdui-menu-item>
+              <mdui-menu-item @click="savePre">{{
+                $t('bop.saveAsPre')
+              }}</mdui-menu-item>
+            </mdui-menu>
+          </mdui-dropdown>
 
           <ChipSelect
             v-if="isMobile"

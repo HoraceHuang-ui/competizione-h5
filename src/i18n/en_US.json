@@ -368,6 +368,7 @@
     "fileInputPlaceholder": "Enter file name",
     "fileSelectPlaceholder": "Select preset file",
     "saveAsJson": "Save as JSON",
+    "saveAsPre": "Save as PRE",
     "overwriteJson": "Overwrite",
     "overwriteNote1": "If turned on, bop.json will be overwritten, please back up your data.",
     "overwriteNote2": "If turned off, a new bop_1.json will be generated, you can rename it to apply the settings.",

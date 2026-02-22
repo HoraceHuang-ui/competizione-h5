@@ -368,6 +368,7 @@
     "fileInputPlaceholder": "请输入文件名",
     "fileSelectPlaceholder": "请选择预设文件",
     "saveAsJson": "保存为JSON",
+    "saveAsPre": "保存为PRE",
     "overwriteJson": "覆盖原文件",
     "overwriteNote1": "若选择覆盖原文件，则将直接修改 bop.json，请注意数据备份。",
     "overwriteNote2": "若不覆盖，则将生成 bop_1.json，可自行重命名以应用设置。",
