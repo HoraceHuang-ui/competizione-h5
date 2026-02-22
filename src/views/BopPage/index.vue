@@ -18,7 +18,7 @@ import '@mdui/icons/save--rounded.js'
 // import PresetDialog from '@/views/BopPage/components/PresetDialog.vue'
 import TrackSelector from '@/components/TrackSelector.vue'
 import ChipSelect from '@/components/ChipSelect.vue'
-import presetTemplate from './components/presetTemplate'
+import presetTemplate from './presetTemplate'
 
 const store = useStore()
 
@@ -432,8 +432,6 @@ watch([curTrack, curSeries], () => {
         </ScrollWrapper>
       </Transition>
     </mdui-card>
-
-    <!--    <PresetDialog v-model="saveDialogShow" :bop="bopData" />-->
   </div>
 </template>
 
