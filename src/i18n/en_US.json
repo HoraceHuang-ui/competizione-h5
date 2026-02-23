@@ -510,6 +510,7 @@
     "newConversation": "New Conversation",
     "thinking": "Thinking...",
     "disclaimer": "Companion uses gpt-oss-120b model and may make mistakes, please double-check",
-    "reasoningProcess": "Thinking Process"
+    "reasoningProcess": "Thinking Process",
+    "invalidResponse": "Reply failed, please try again later"
   }
 }

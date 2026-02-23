@@ -510,6 +510,7 @@
     "newConversation": "新会话",
     "thinking": "助手娘思考中……",
     "disclaimer": "小助手使用 gpt-oss-120b 模型，可能产生错误，请仔细甄别哦",
-    "reasoningProcess": "思考过程"
+    "reasoningProcess": "思考过程",
+    "invalidResponse": "回复失败，请稍后重试"
   }
 }
