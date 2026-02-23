@@ -11,13 +11,13 @@ import '@mdui/icons/download.js'
 import '@mdui/icons/coffee--rounded.js'
 import '@mdui/icons/celebration--rounded.js'
 import '@mdui/icons/contact-support--rounded.js'
+import '@mdui/icons/assistant--rounded.js'
 import { onMounted, provide, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '@/store'
 import { setColorScheme, setTheme } from 'mdui'
 import {
   asseconHimeThemeColor,
-  asseconHimeUrls,
   darkModeSettings,
   themeMap,
 } from '@/utils/enums'
@@ -25,6 +25,7 @@ import { translate } from '@/i18n'
 import { marked } from 'marked'
 import { launchSteam, openLink } from '@/utils/utils'
 import axios from 'axios'
+import AIDrawer from './components/AIDrawer.vue'
 
 const router = useRouter()
 const store = useStore()
@@ -52,6 +53,8 @@ const nav = (index: number) => {
   mode.value = index
   router.push({ name: pages[index] })
 }
+
+const aiDrawerOpen = ref(false)
 
 const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
 
@@ -302,6 +305,24 @@ watch(
       </mdui-tooltip>
 
       <mdui-tooltip
+        :content="'AI ' + $t('general.appNickName')"
+        placement="right"
+        slot="bottom"
+        class="relative"
+      >
+        <div class="relative">
+          <mdui-button-icon @click="aiDrawerOpen = true">
+            <mdui-icon-assistant--rounded></mdui-icon-assistant--rounded>
+          </mdui-button-icon>
+          <mdui-badge
+            class="absolute right-0 top-0 px-1"
+            v-if="store.general.msgId < 3"
+            >AI</mdui-badge
+          >
+        </div>
+      </mdui-tooltip>
+
+      <mdui-tooltip
         :content="translate('general.launchACC')"
         placement="right"
         slot="bottom"
@@ -484,6 +505,8 @@ watch(
       >{{ $t('general.close') }}</mdui-button
     >
   </mdui-dialog>
+
+  <AIDrawer v-model="aiDrawerOpen" />
 </template>
 
 <style>
@@ -534,7 +557,25 @@ span {
 
   ul {
     list-style: disc inside;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  ol {
+    list-style: decimal inside;
+    margin: 0.5rem 0;
+  }
+
+  table {
+    margin: 0.5rem 0;
+
+    thead {
+      border: 2px solid;
+    }
+    th,
+    td {
+      border: 1px solid;
+      padding: 0.25rem 0.5rem;
+    }
   }
 }
 

@@ -2,6 +2,7 @@
   "langCode": "zh_CN",
   "general": {
     "appName": "争锋小助手",
+    "appNickName": "小助手",
     "status": "Lobby 服务器状态",
     "statusShort": "状态",
     "servers": "服务器列表",
@@ -502,5 +503,13 @@
     "laguna_seca": "拉古纳塞卡",
     "suzuka": "铃鹿",
     "kyalami": "卡拉米"
+  },
+  "ai": {
+    "inputPlaceholder": "为什么不问问神奇的助手娘呢？",
+    "welcomeMsg": "你好呀，我是助手娘！如果你在驾驶过程中感觉车辆有点问题，或者想要提升圈速但又不知道从哪里入手的话，可以问我哦！我会给你一些调校方向上的建议！",
+    "newConversation": "新会话",
+    "thinking": "助手娘思考中……",
+    "disclaimer": "小助手使用 gpt-oss-120b 模型，可能产生错误，请仔细甄别哦",
+    "reasoningProcess": "思考过程"
   }
 }

@@ -33,11 +33,21 @@ export const useStore = defineStore('userStore', {
         alwaysViewOnly: false,
       },
     },
+    messages: [] as Array<{
+      role: string
+      content: string
+      reasoning?: string
+    }>,
   }),
   actions: {
     clear() {
-      // this.$state = { ...initState }
       this.$reset()
+    },
+    addMessage(msg: { role: string; content: string; reasoning?: string }) {
+      this.messages.push(msg)
+    },
+    newConversation() {
+      this.messages = []
     },
   },
   persist: true,
