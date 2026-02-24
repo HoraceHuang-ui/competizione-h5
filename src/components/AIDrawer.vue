@@ -52,17 +52,14 @@ async function sendMessage() {
   }
   userInput.value = ''
   try {
-    const response = await fetch(
-      'https://api.cloudflare.com/client/v4/accounts/b666bcb97b0bdc3983313c378229ce79/ai/run/@cf/openai/gpt-oss-120b',
-      {
-        headers: {
-          Authorization: 'Bearer qumdW8_T-1hXUTKo4rm7QVUlYwnXfv2i7Bxr2Pkc',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(input),
+    const response = await fetch('/ai', {
+      headers: {
+        Authorization: 'Bearer qumdW8_T-1hXUTKo4rm7QVUlYwnXfv2i7Bxr2Pkc',
+        'Content-Type': 'application/json',
       },
-    )
+      method: 'POST',
+      body: JSON.stringify(input),
+    })
     const apiResult = await response.json()
     let aiContent = ''
     let aiReasoning = ''

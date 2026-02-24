@@ -30,14 +30,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: {
-    proxy: {
-      '/ai': {
-        target:
-          'https://api.cloudflare.com/client/v4/accounts/b666bcb97b0bdc3983313c378229ce79/ai/run/@cf/openai/gpt-oss-120b',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/ai/, ''),
-      },
-    },
-  },
 })
