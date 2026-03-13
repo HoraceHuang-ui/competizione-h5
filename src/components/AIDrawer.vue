@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useStore } from '@/store'
 import { marked } from 'marked'
 import { translate } from '@/i18n'
@@ -99,6 +99,15 @@ async function sendMessage() {
 const aiDrawerOpen = defineModel({
   type: Boolean,
   default: false,
+})
+
+watch(aiDrawerOpen, newVal => {
+  if (newVal) {
+    if ((store.messages?.length || 0) <= 2) {
+      store.messages = []
+      getChatHistory()
+    }
+  }
 })
 </script>
 
