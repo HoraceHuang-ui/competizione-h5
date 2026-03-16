@@ -16,6 +16,7 @@ import { availableLangCodes, langMap, switchLang, translate } from '@/i18n'
 import { ChromePicker } from 'vue-color'
 import FavDialog from '@/views/SettingsPage/components/FavDialog.vue'
 import { openLink } from '@/utils/utils'
+import LanguageSelector from './components/LanguageSelector.vue'
 
 const showFavDialog = ref(false)
 
@@ -71,24 +72,6 @@ const resetSettings = () => {
   }
 }
 
-const onLangSelect = () => {
-  switchLang(lang.value)
-  if (
-    ['舞萌DX启动！', 'Time for maimai DX!'].includes(
-      store.settings.status.serverDownMsg,
-    )
-  ) {
-    store.settings.status.serverDownMsg = translate(
-      'settings.serverDownMsgDefault',
-    )
-  }
-
-  if (lang.value === 'en_US') {
-    store.settings.setup.carDisplay = trackCarDispSettings.EN_SHORT
-    store.settings.setup.trackDisplay = trackCarDispSettings.EN_SHORT
-  }
-}
-
 let throttleTimeout: ReturnType<typeof setTimeout> | null = null
 let lastThemeColor: string | null = null
 
@@ -133,14 +116,7 @@ watch(
             <div class="item">
               <div class="item-in">
                 <div>{{ $t('settings.language') }}</div>
-                <ChipSelect
-                  v-model="lang"
-                  :items="availableLangCodes"
-                  chip-class="rounded-full"
-                  :chip-label="item => langMap[item]"
-                  :item-label="item => langMap[item]"
-                  @select="onLangSelect"
-                />
+                <LanguageSelector v-model="lang" />
               </div>
             </div>
             <div class="item">

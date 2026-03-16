@@ -11,6 +11,7 @@ declare module 'vue' {
     AIDrawer: typeof import('./src/components/AIDrawer.vue')['default']
     CarSelector: typeof import('./src/components/CarSelector.vue')['default']
     ChipSelect: typeof import('./src/components/ChipSelect.vue')['default']
+    FirstSetup: typeof import('./src/components/FirstSetup.vue')['default']
     MyCarousel: typeof import('./src/components/MyCarousel.vue')['default']
     Pagination: typeof import('./src/components/Pagination.vue')['default']
     PenaltyTable: typeof import('./src/components/PenaltyTable.vue')['default']

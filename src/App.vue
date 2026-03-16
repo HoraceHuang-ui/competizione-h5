@@ -26,6 +26,7 @@ import { marked } from 'marked'
 import { launchSteam, openLink } from '@/utils/utils'
 import axios from 'axios'
 import AIDrawer from './components/AIDrawer.vue'
+import FirstSetup from './components/FirstSetup.vue'
 
 const router = useRouter()
 const store = useStore()
@@ -101,9 +102,24 @@ const queryBulletin = async () => {
     store.general.msgId = res.data.msgInfo.id
   }
 }
+const firstSetupShow = ref(false)
+
+watch(
+  () => store.general.firstSetupFlag,
+  val => {
+    if (val) {
+      queryBulletin()
+    }
+  },
+)
 
 onMounted(() => {
-  queryBulletin()
+  if (!store.general.firstSetupFlag) {
+    firstSetupShow.value = true
+  } else {
+    queryBulletin()
+  }
+
   for (let i = 0; i < pages.length; i++) {
     if (
       pages[i] &&
@@ -507,6 +523,8 @@ watch(
   </mdui-dialog>
 
   <AIDrawer v-model="aiDrawerOpen" />
+
+  <FirstSetup v-model="firstSetupShow" />
 </template>
 
 <style>
