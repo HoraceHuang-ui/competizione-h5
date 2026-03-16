@@ -165,7 +165,7 @@ watch(aiDrawerOpen, newVal => {
       <ScrollWrapper
         :stick-bottom="true"
         class="chat-history mb-4 rounded-2xl p-1 bg-[rgb(var(--mdui-color-surface-container-lowest))] select-text"
-        style="height: calc(100vh - 56px - 8px - 12px - 56px - 16px - 20px)"
+        style="height: calc(100dvh - 56px - 8px - 12px - 56px - 16px - 20px)"
       >
         <div class="p-3">
           <TransitionGroup name="message-appear" tag="div">

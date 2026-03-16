@@ -4,7 +4,7 @@ import { getCarDisplayById, getTrackDisplay } from '@/utils/utils'
 import LanguageSelector from '@/views/SettingsPage/components/LanguageSelector.vue'
 import ChipSelect from './ChipSelect.vue'
 import FavDialog from '@/views/SettingsPage/components/FavDialog.vue'
-import { computed, ref } from 'vue'
+import { computed, inject, ref, type ComputedRef } from 'vue'
 
 import '@mdui/icons/help-outline--rounded.js'
 
@@ -38,10 +38,12 @@ const closeDialog = () => {
   helpDialogOpen.value = false
   store.general.firstSetupFlag = true
 }
+
+const isMobile = inject('isMobile') as ComputedRef<boolean>
 </script>
 
 <template>
-  <mdui-dialog class="help-dialog" :open="helpDialogOpen">
+  <mdui-dialog class="help-dialog" :open="helpDialogOpen && !isMobile">
     <div
       slot="headline"
       class="w-full flex flex-row justify-between items-center"
