@@ -48,7 +48,8 @@ export const hipoleEventMap = {
   TTC: 'Silver',
   MCC: 'Silver',
   RWC: 'Gold',
-  Thr: 'Platinum', // Thrustmaster HEC
+  APG: 'Gold',
+  HEC: 'Platinum',
 }
 
 export const hipoleEventColors = {
