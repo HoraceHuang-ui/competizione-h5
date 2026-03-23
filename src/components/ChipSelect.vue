@@ -3,13 +3,14 @@ import ScrollWrapper from '@/components/ScrollWrapper.vue'
 import '@mdui/icons/check--rounded.js'
 import '@mdui/icons/arrow-drop-down--rounded.js'
 import { nextTick } from 'vue'
+import { translate } from '@/i18n'
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'open'])
 
 const props = defineProps({
   placeholder: {
     type: String,
-    default: '请选择',
+    default: translate('general.pleaseSelect'),
   },
   chipLabel: {
     type: Function,
@@ -47,6 +48,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  maxItems: {
+    type: Number,
+    default: 8,
+  },
+  fixedHeight: {
+    type: Number,
+  },
 })
 
 const selection = defineModel({
@@ -66,6 +74,7 @@ const onSelect = (item: any) => {
   <mdui-dropdown
     :placement="props.dropdownPlacement"
     :disabled="props.disabled"
+    @open="emit('open')"
   >
     <mdui-chip
       slot="trigger"
@@ -81,7 +90,19 @@ const onSelect = (item: any) => {
       ></mdui-icon-arrow-drop-down--rounded>
     </mdui-chip>
     <mdui-menu>
-      <ScrollWrapper :height="props.items.length > 8 ? '390px' : '100%'">
+      <div @keydown.space.stop>
+        <slot name="prefix"></slot>
+      </div>
+      <ScrollWrapper
+        :height="
+          props.fixedHeight
+            ? `${props.fixedHeight}px`
+            : props.items.length > props.maxItems
+              ? `${props.maxItems * 48 + 6}px`
+              : '100%'
+        "
+        class="no-drag"
+      >
         <mdui-menu-item
           v-for="item in props.items"
           :key="props.forKey(item)"
