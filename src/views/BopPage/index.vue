@@ -152,7 +152,7 @@ watch([curTrack, curSeries], () => {
           <TrackSelector
             v-if="curCategoryMethod === 'byTrack'"
             v-model="curTrack"
-            dropdown-placement="bottom"
+            dropdown-placement="bottom-start"
             chip-class="border border-[rgb(var(--mdui-color-outline-variant))] mr-2"
             :key-idx="trackIndex.LFM"
           />
@@ -160,7 +160,7 @@ watch([curTrack, curSeries], () => {
             v-else
             v-model="curCar"
             :group="curSeries"
-            dropdown-placement="bottom"
+            dropdown-placement="bottom-start"
             chip-class="border border-[rgb(var(--mdui-color-outline-variant))] mr-2"
           />
           <mdui-radio-group
@@ -198,7 +198,7 @@ watch([curTrack, curSeries], () => {
           <div v-else class="flex flex-row items-center">
             <div>&nbsp;</div>
           </div>
-          <mdui-dropdown trigger="hover">
+          <mdui-dropdown trigger="hover" v-if="!isMobile">
             <mdui-button-icon class="mr-2" slot="trigger" :disabled="loading">
               <mdui-icon-save--rounded></mdui-icon-save--rounded>
             </mdui-button-icon>
@@ -216,6 +216,7 @@ watch([curTrack, curSeries], () => {
             v-if="isMobile"
             v-model="curSeries"
             :items="series"
+            dropdown-placement="bottom-end"
             chip-class="border border-[rgb(var(--mdui-color-outline-variant))] mr-2"
           />
           <mdui-segmented-button-group

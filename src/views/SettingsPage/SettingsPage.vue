@@ -580,10 +580,8 @@ watch(
   .category {
     width: 100%;
     margin-bottom: 2rem;
-    background-color: rgba(var(--mdui-color-surface-container-lowest), 0.45);
+    background-color: rgba(var(--mdui-color-surface-container-lowest), 0.6);
     border-radius: 30px;
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
 
     .item {
       height: 60px;
