@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, PropType, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch, PropType } from 'vue'
 
 const props = defineProps({
   height: {
@@ -192,7 +192,7 @@ onMounted(() => {
 const scrollTo = (scrollProps: {
   top: number
   left: number
-  behavior: string
+  behavior: ScrollBehavior
 }) => {
   outerRef.value.scroll(scrollProps.left, scrollProps.top)
 }

@@ -12,6 +12,7 @@ export const useStore = defineStore('userStore', {
       },
       msgId: 0,
       firstSetupFlag: false,
+      aiModel: 'gpt-oss-120b',
     },
     servers: {
       listView: false,
@@ -39,6 +40,10 @@ export const useStore = defineStore('userStore', {
       content: string
       reasoning?: string
     }>,
+    tokenUsage: {
+      pro: { date: '', token: 0 },
+      flash: { date: '', token: 0 },
+    },
   }),
   actions: {
     clear() {
