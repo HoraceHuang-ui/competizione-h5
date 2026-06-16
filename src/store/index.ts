@@ -12,7 +12,7 @@ export const useStore = defineStore('userStore', {
       },
       msgId: 0,
       firstSetupFlag: false,
-      aiModel: 'gpt-oss-120b',
+      aiModel: 'deepseek-v4-pro',
     },
     servers: {
       listView: false,
