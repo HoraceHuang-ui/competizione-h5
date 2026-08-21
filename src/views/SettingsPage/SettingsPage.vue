@@ -324,6 +324,27 @@ watch(
               </div>
             </div>
             <div class="larger mt-4">
+              <div class="w-full text-center opacity-50 text-sm">
+                {{ $t('settings.sponsor') }}
+              </div>
+              <div
+                class="w-full text-center flex flex-row justify-center flex-wrap gap-3 items-center mb-6"
+              >
+                <mdui-tooltip placement="top" class="credits">
+                  <div slot="content" class="select-text cursor-text">
+                    {{ $t('settings.pxnTooltip') }}
+                  </div>
+                  <img
+                    :src="`/pxn/trans6${dark.isDark.value ? 'dark' : 'light'}.png`"
+                    class="inline opacity-55 hover:opacity-100 transition-all"
+                    width="200"
+                  />
+                </mdui-tooltip>
+              </div>
+
+              <div class="w-full text-center opacity-50 text-sm">
+                {{ $t('settings.thanks') }}
+              </div>
               <div
                 class="w-full text-center text-[rgb(var(--mdui-color-outline))] flex flex-row flex-wrap gap-3 justify-center items-center"
               >
@@ -360,7 +381,7 @@ watch(
                     {{ $t('settings.hmrTooltip') }}
                   </div>
                   <div
-                    class="flex flex-row items-center mx-4 opacity-55 hover:opacity-100"
+                    class="flex flex-row items-center ml-3 mr-2 opacity-55 hover:opacity-100"
                   >
                     <img src="../../assets/HerMess.png" width="40" />
                     <img src="../../assets/HerMess_text.png" width="90" />
