@@ -33,6 +33,16 @@ const router = VueRouter.createRouter({
       path: '/settings',
       component: () => import('../views/SettingsPage/SettingsPage.vue'),
     },
+    {
+      name: 'download',
+      path: '/download',
+      component: () => import('../views/DownloadPage/index.vue'),
+    },
+    {
+      name: 'notFound',
+      path: '/:pathMatch(.*)*',
+      component: () => import('../views/NotFoundPage/index.vue'),
+    },
   ],
 })
 

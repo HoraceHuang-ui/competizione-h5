@@ -8,12 +8,13 @@ import '@mdui/icons/balance--rounded.js'
 import '@mdui/icons/close--rounded.js'
 import '@mdui/icons/announcement.js'
 import '@mdui/icons/download.js'
+import '@mdui/icons/home--rounded.js'
 import '@mdui/icons/coffee--rounded.js'
 import '@mdui/icons/celebration--rounded.js'
 import '@mdui/icons/contact-support--rounded.js'
 import '@mdui/icons/assistant--rounded.js'
 import { onMounted, provide, ref, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useStore } from '@/store'
 import { setColorScheme, setTheme } from 'mdui'
 import {
@@ -29,10 +30,14 @@ import AIDrawer from './components/AIDrawer.vue'
 import FirstSetup from './components/FirstSetup.vue'
 
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 setTheme(
   themeMap[store.settings.general.darkMode as keyof typeof themeMap] ?? 'auto',
 )
+
+const isDownloadPage = computed(() => route.name === 'download')
+const isNotFoundPage = computed(() => route.name === 'notFound')
 
 const donationOpen1 = ref(false)
 const donationOpen2 = ref(false)
@@ -143,6 +148,10 @@ const onHyperLinkClick = (e: Event) => {
   }
 }
 
+const goBack = () => {
+  window.history.back()
+}
+
 watch(
   isDark,
   newVal => {
@@ -174,7 +183,7 @@ watch(
   </Transition>
   <mdui-layout class="size-full overflow-hidden" @click="onHyperLinkClick">
     <mdui-top-app-bar
-      v-if="isMobile"
+      v-if="isMobile && !isNotFoundPage"
       variant="small"
       scroll-target="#mainRouterView"
       class="flex flex-row justify-center items-center h-10 bg-transparent"
@@ -182,11 +191,15 @@ watch(
       <span
         class="font-bold title mr-2"
         style="color: rgb(var(--mdui-color-primary))"
-        >{{ $t(modes[mode] ?? '') }}</span
+        >{{
+          isDownloadPage
+            ? $t('download.pageTitle', { appName: $t('general.appName') })
+            : $t(modes[mode] ?? '')
+        }}</span
       >
     </mdui-top-app-bar>
     <mdui-top-app-bar
-      v-else
+      v-else-if="!isNotFoundPage"
       variant="small"
       scroll-target="#mainRouterView"
       class="pt-1 pl-3 pr-4 drag bg-transparent flex flex-row justify-between h-16 items-center"
@@ -199,7 +212,9 @@ watch(
           <span
             class="font-bold title mr-2"
             style="color: rgb(var(--mdui-color-primary))"
-            >{{ $t(modes[mode] ?? '') }}</span
+            >{{
+              isDownloadPage ? $t('download.pageTitle') : $t(modes[mode] ?? '')
+            }}</span
           >
           |
           <span class="ml-2 opacity-70">{{ $t('general.appName') }}</span>
@@ -236,20 +251,20 @@ watch(
         </mdui-tooltip>
         <mdui-button
           variant="tonal"
-          @click="
-            openLink(
-              'https://gitcode.com/HoraceHuang-ui/Competizione-Companion/releases',
-            )
-          "
+          @click="isDownloadPage ? goBack() : router.push({ name: 'download' })"
         >
-          <mdui-icon-download slot="icon"></mdui-icon-download>
-          {{ $t('general.getApp') }}
+          <mdui-icon-home--rounded
+            v-if="isDownloadPage"
+            slot="icon"
+          ></mdui-icon-home--rounded>
+          <mdui-icon-download v-else slot="icon"></mdui-icon-download>
+          {{ isDownloadPage ? $t('download.backHome') : $t('general.getApp') }}
         </mdui-button>
       </div>
     </mdui-top-app-bar>
 
     <mdui-navigation-rail
-      v-if="!isMobile"
+      v-if="!isMobile && !isDownloadPage && !isNotFoundPage"
       value="status"
       divider
       class="pb-4 bg-transparent w-16"
@@ -385,7 +400,11 @@ watch(
       </router-view>
     </mdui-layout-main>
 
-    <mdui-navigation-bar v-if="isMobile" :value="mode" class="bg-transparent">
+    <mdui-navigation-bar
+      v-if="isMobile && !isNotFoundPage"
+      :value="mode"
+      class="bg-transparent"
+    >
       <mdui-navigation-bar-item icon="place" :value="0" @click="nav(0)"
         >{{ $t('general.statusShort') }}
         <mdui-icon-cell-tower--rounded

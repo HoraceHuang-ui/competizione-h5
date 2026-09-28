@@ -537,5 +537,19 @@
     "page6desc": "在此页面，你可以输入事故描述，然后小助手会为你自动匹配《嗨跑赛车线上联赛竞技规则》中的条目，帮助你高效完成投诉文案的撰写。",
     "page7desc": "小助手已接入 AI 大模型！现在点击左下角的 AI 按钮开启对话吧！如果你在驾驶过程中遇到任何问题，欢迎向她咨询；无聊的时候也可以跟她聊聊天哦！",
     "page8desc": "最后，感谢使用争锋小助手 x PXN！小助手的不断完善，离不开大家的共创。如果使用中遇到问题，欢迎在各大嗨跑群找我（horacehuang17）反馈。如果喜欢这个项目，欢迎在设置页捐赠支持一下哦！"
+  },
+  "download": {
+    "pageTitle": "客户端下载",
+    "thanksTitle": "感谢下载「{appName}」！",
+    "subtitle": "无论你是新手还是大佬，小助手都能帮你更好地游玩ACC！",
+    "downloadWin": "下载 Win 版",
+    "downloadMac": "下载 Mac 版",
+    "currentVersion": "当前版本：{version}",
+    "backHome": "返回主站",
+    "fetchFailed": "获取下载信息失败，请稍后重试"
+  },
+  "notFound": {
+    "pageNotFound": "您访问的页面不存在",
+    "backHome": "返回主站"
   }
 }
