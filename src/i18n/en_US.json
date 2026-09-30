@@ -546,7 +546,18 @@
     "downloadMac": "Download for Mac",
     "currentVersion": "Current Version: {version}",
     "backHome": "Back to Main Site",
-    "fetchFailed": "Failed to get download info. Please try again later."
+    "fetchingVersion": "Fetching the latest version…",
+    "fallbackPrefix": "The assistant is unreachable! You can download the client from",
+    "fallbackOr": "or",
+    "fallbackSuffix": ".",
+    "retry": "Retry",
+    "macNoticeTitle": "macOS Installation Notes",
+    "macNoticeDesc": "To run it on macOS, open the DMG, move {appName} into Applications, then open Terminal and run the following commands:",
+    "macNoticeCommands": "xattr -cr \"/Applications/Competizione Companion.app\"  # Remove the quarantine attribute\ncodesign --force --deep --sign - \"/Applications/Competizione Companion.app\"  # Re-apply an ad-hoc signature",
+    "macNoticeTip": "* You can open Terminal by pressing ⌘Space to bring up Spotlight search, then typing “Terminal”",
+    "macNoticeCopy": "Copy commands",
+    "macNoticeCopied": "Commands copied to clipboard",
+    "macNoticeCopyFail": "Copy failed, please select the commands manually"
   },
   "notFound": {
     "pageNotFound": "The page you are looking for does not exist",
