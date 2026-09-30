@@ -553,7 +553,7 @@
     "retry": "Retry",
     "macNoticeTitle": "macOS Installation Notes",
     "macNoticeDesc": "To run it on macOS, open the DMG, move {appName} into Applications, then open Terminal and run the following commands:",
-    "macNoticeCommands": "xattr -cr \"/Applications/Competizione Companion.app\"  # Remove the quarantine attribute\ncodesign --force --deep --sign - \"/Applications/Competizione Companion.app\"  # Re-apply an ad-hoc signature",
+    "macNoticeCommands": "xattr -cr \"/Applications/Competizione Companion x PXN.app\"  # Remove the quarantine attribute\ncodesign --force --deep --sign - \"/Applications/Competizione Companion x PXN.app\"  # Re-apply an ad-hoc signature",
     "macNoticeTip": "* You can open Terminal by pressing ⌘Space to bring up Spotlight search, then typing “Terminal”",
     "macNoticeCopy": "Copy commands",
     "macNoticeCopied": "Commands copied to clipboard",
